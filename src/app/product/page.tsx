@@ -3,6 +3,7 @@
 import React from 'react';
 import { Header } from '@/components/layout/header';
 import { TabBar } from '@/components/layout/tabBar';
+import { Footer } from '@/components/layout/Footer';
 
 import { motion } from 'motion/react';
 import { MotionContainer, MotionText } from '@/components/ui/motionText';
@@ -84,6 +85,7 @@ export default function ProductPage() {
           </div>
         </MotionContainer>
       </main>
+      <Footer />
       <TabBar />
     </div>
   );

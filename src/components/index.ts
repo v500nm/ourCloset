@@ -7,5 +7,6 @@ export * from './ui/stitchingDivider';
 export * from './ui/statusWheel';
 export * from './layout/header';
 export * from './layout/tabBar';
+export * from './layout/Footer';
 export * from './accessibility/patternIcon';
 export * from './ui/skeleton';

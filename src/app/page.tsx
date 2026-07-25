@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/header';
 import { TabBar } from '@/components/layout/tabBar';
+import { Footer } from '@/components/layout/Footer';
 import { LandingHero } from '@/components/landing/LandingHero';
 import { LandingBentoGrid } from '@/components/landing/LandingBentoGrid';
 import { LandingTimelineShowcase } from '@/components/landing/LandingTimelineShowcase';
@@ -20,6 +21,9 @@ export default function SplashPage() {
         <LandingPricing />
         <LandingCTA />
       </main>
+
+      {/* Footer */}
+      <Footer />
 
       {/* Mobile Bottom Navigation Bar */}
       <TabBar />

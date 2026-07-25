@@ -6,11 +6,33 @@ import { WardrobeProvider } from '@/providers/WardrobeProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { PWAInstallPrompt } from '@/components/ui/PWAInstallPrompt';
 
+const siteUrl = 'https://ourcloset.adnan-mangaonkar.com';
+
 export const metadata: Metadata = {
-  title: 'ourCloset — Zero-Key AI Wardrobe Coordination',
+  metadataBase: new URL(siteUrl),
+  title: {
+    template: '%s | ourCloset',
+    default: 'ourCloset — Zero-Key AI Wardrobe Coordination',
+  },
   description:
-    'Couple wardrobe coordination across Western, Indian Traditional, and Islamic-Modest dress codes. Zero paid AI API calls — all inference runs client-side.',
+    'Couple & Family wardrobe coordination engine across Western, Indian Traditional, and Islamic-Modest dress codes. Runs entirely client-side with 100% data privacy.',
+  keywords: [
+    'wardrobe coordinator',
+    'couple clothing match app',
+    'multi-cultural dress code planner',
+    'local AI outfit matcher',
+    'Indian traditional outfit planner',
+    'Islamic modest wear matching',
+    'software engineer Mumbai',
+    'Adnan Mangaonkar Consulting',
+  ],
+  authors: [{ name: 'Adnan Shafiq Mangaonkar' }],
+  creator: 'Adnan Shafiq Mangaonkar',
+  publisher: 'Adnan Shafiq Mangaonkar Consulting',
   manifest: '/manifest.json',
+  alternates: {
+    canonical: '/',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -34,6 +56,9 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
     title: 'ourCloset — Zero-Key AI Wardrobe Coordination',
     description: 'Couple & Family wardrobe coordination engine. 100% in-browser WASM AI.',
     siteName: 'ourCloset',
@@ -47,7 +72,6 @@ export const metadata: Metadata = {
     ],
   },
 };
-
 
 export const viewport: Viewport = {
   themeColor: '#FAF8F5',
@@ -75,6 +99,38 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
+        />
+        
+        {/* Structured Local & Geo SEO Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              'name': 'ourCloset',
+              'url': siteUrl,
+              'applicationCategory': 'LifestyleApplication',
+              'operatingSystem': 'All',
+              'description': 'Couple & Family wardrobe coordination engine across Western, Indian Traditional, and Islamic-Modest dress codes. Runs entirely client-side with 100% data privacy.',
+              'offers': {
+                '@type': 'Offer',
+                'price': '0',
+                'priceCurrency': 'USD'
+              },
+              'author': {
+                '@type': 'Person',
+                'name': 'Adnan Shafiq Mangaonkar',
+                'url': 'https://adnan-mangaonkar.com',
+                'address': {
+                  '@type': 'PostalAddress',
+                  'addressLocality': 'Mumbai',
+                  'addressRegion': 'Maharashtra',
+                  'addressCountry': 'IN'
+                }
+              }
+            })
+          }}
         />
       </head>
       <body className="bg-raw-silk text-charcoal-thread min-h-screen flex flex-col font-body text-body-md antialiased overflow-x-hidden" suppressHydrationWarning>

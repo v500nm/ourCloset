@@ -3,6 +3,7 @@
 import React from 'react';
 import { Header } from '@/components/layout/header';
 import { TabBar } from '@/components/layout/tabBar';
+import { Footer } from '@/components/layout/Footer';
 import { LandingPricing } from '@/components/landing/LandingPricing';
 
 export default function PricingPage() {
@@ -12,6 +13,7 @@ export default function PricingPage() {
       <main className="flex-grow pt-32 pb-24 px-4 w-full">
         <LandingPricing />
       </main>
+      <Footer />
       <TabBar />
     </div>
   );

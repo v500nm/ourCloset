@@ -3,6 +3,7 @@
 import React from 'react';
 import { Header } from '@/components/layout/header';
 import { TabBar } from '@/components/layout/tabBar';
+import { Footer } from '@/components/layout/Footer';
 
 import { Button } from '@/components';
 
@@ -52,6 +53,7 @@ export default function ContactPage() {
           </Button>
         </form>
       </main>
+      <Footer />
       <TabBar />
     </div>
   );
