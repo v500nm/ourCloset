@@ -1,0 +1,315 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ourCloset - Twinning Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&amp;family=Inter:wght@400..700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f4f3f2",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#cae9de",
+                        "on-primary-fixed-variant": "#304c44",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-secondary-container": "#795a26",
+                        "tertiary-fixed-dim": "#e1bdc8",
+                        "on-secondary-fixed-variant": "#5d4210",
+                        "outline-variant": "#c1c8c4",
+                        "surface-container": "#eeeeec",
+                        "secondary": "#785926",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#48645b",
+                        "on-primary-container": "#87a59b",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#aecdc2",
+                        "on-tertiary-fixed-variant": "#594049",
+                        "secondary-container": "#fed394",
+                        "on-surface-variant": "#414845",
+                        "on-primary-fixed": "#032019",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1f3b33",
+                        "surface": "#faf9f7",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#e9c083",
+                        "background": "#faf9f7",
+                        "secondary-fixed": "#ffddae",
+                        "surface-dim": "#dadad8",
+                        "surface-container-high": "#e9e8e6",
+                        "inverse-on-surface": "#f1f1ef",
+                        "tertiary-container": "#472f38",
+                        "primary": "#08251e",
+                        "surface-variant": "#e3e2e0",
+                        "surface-bright": "#faf9f7",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#aecdc2",
+                        "outline": "#727975",
+                        "on-tertiary-container": "#b796a0",
+                        "on-background": "#1a1c1b",
+                        "on-tertiary-fixed": "#2a151d",
+                        "on-surface": "#1a1c1b",
+                        "tertiary-fixed": "#fed9e4",
+                        "tertiary": "#301a22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "container-max": "1200px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "label-spec": ["JetBrains Mono"],
+                        "display-lg": ["Domine"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "utility-mono": ["JetBrains Mono"],
+                        "display-lg-mobile": ["Domine"],
+                        "headline-md": ["Domine"]
+                    },
+                    "fontSize": {
+                        "label-spec": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg": ["42px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "utility-mono": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .torn-corner {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+        }
+        .stitched-divider {
+            background-image: linear-gradient(to bottom, var(--tw-colors-outline-variant) 40%, rgba(255, 255, 255, 0) 20%);
+            background-position: left;
+            background-size: 2px 8px;
+            background-repeat: repeat-y;
+        }
+        .stitched-divider-horizontal {
+            background-image: linear-gradient(to right, var(--tw-colors-outline-variant) 40%, rgba(255, 255, 255, 0) 20%);
+            background-position: top;
+            background-size: 8px 2px;
+            background-repeat: repeat-x;
+        }
+        .hard-shadow {
+            box-shadow: 2px 2px 0px 0px rgba(43,42,40,0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#EDE6D6] text-on-surface min-h-screen flex flex-col font-body-md text-body-md pb-24 md:pb-0">
+<!-- Top Navigation (Shared Component) -->
+<nav class="hidden md:flex justify-between items-center w-full px-margin-desktop py-4 bg-primary text-on-primary border-b border-dashed border-outline-variant sticky top-0 z-40" style="background-color: rgb(31, 59, 51);">
+<div class="flex items-center gap-4">
+<span class="font-display-lg text-display-lg text-on-primary">ourCloset</span>
+</div>
+<div class="flex items-center gap-8">
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 transition-colors font-label-spec text-label-spec px-4 py-2 rounded" href="#">Today</a>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 transition-colors font-label-spec text-label-spec px-4 py-2 rounded" href="#">Closet</a>
+<a class="text-on-primary font-bold border-b-2 border-secondary hover:bg-primary-container/20 transition-colors font-label-spec text-label-spec px-4 py-2 rounded" href="#">Twinning</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-primary-container/20 transition-colors p-2 rounded">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</nav>
+<!-- Mobile Top Bar (Semantic Title Only) -->
+<header class="md:hidden flex justify-between items-center w-full px-margin-mobile py-4 bg-[#EDE6D6] border-b border-dashed border-outline-variant sticky top-0 z-40">
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary font-extrabold tracking-tight">ourCloset</span>
+<button class="p-2">
+<span class="material-symbols-outlined text-primary">person</span>
+</button>
+</header>
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12 flex flex-col md:flex-row gap-6 md:gap-12 relative">
+<!-- Vertical Stitched Divider (Desktop) -->
+<div class="hidden md:block absolute left-1/3 top-12 bottom-12 w-px stitched-divider z-0"></div>
+<!-- Left Column: Partner A Locked Outfit -->
+<section class="w-full md:w-1/3 flex flex-col relative z-10">
+<header class="mb-6">
+<h2 class="font-headline-md text-headline-md text-primary mb-2 font-display-lg">Partner A</h2>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">lock</span>
+<span class="font-label-spec text-label-spec text-on-surface-variant uppercase">Locked Outfit</span>
+</div>
+</header>
+<article class="bg-surface-container-low border border-outline-variant torn-corner hard-shadow p-4 flex flex-col gap-4">
+<div class="aspect-[3/4] w-full bg-surface-dim relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A high-end flat-lay photography shot of a classic men's outfit. The outfit consists of a tailored navy blue blazer, a crisp white Oxford shirt, and charcoal grey wool trousers. The clothing is laid out precisely on a raw silk textured background, lit softly from above. The aesthetic is clean, structured, and modern luxury, fitting a premium tailoring workshop vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3byQRmMjN2vHZ935mx6cGzLlN-dmwBs3mR4quYJunQbw5ZxN8XkbZ5-hS8KP5wUJieRhbPWRRGv7HWkiiMequSDuys_MkXvCf8We9oW9f-aLLgHkRzhHqpxey1AeKXVUU1UKMcQSHTAmeR0dYIG-FOc1OEWd03McMTTXTmDNlEcz4fongsxjkCwhhQKQ5YE2C-NLLjnS_YRslh8dxENC9xxesTuFQipGx_6PfDN0BUCxDuexZxfK0IB1XGXyhRDO_pXjyt_4VNpY">
+</div>
+<div class="flex flex-col gap-2 pt-2 border-t border-dashed border-outline-variant mt-2">
+<div class="flex justify-between items-center font-utility-mono text-utility-mono text-on-surface-variant">
+<span class="">SPEC_ID:</span>
+<span class="text-primary font-medium">#NVA-482</span>
+</div>
+<div class="flex justify-between items-center font-utility-mono text-utility-mono text-on-surface-variant">
+<span class="">FORMALITY:</span>
+<span class="text-primary font-medium">7.5/10</span>
+</div>
+<div class="flex gap-2 mt-2">
+<span class="px-2 py-1 bg-primary text-on-primary font-label-spec text-[10px] rounded-sm">NAVY</span>
+<span class="px-2 py-1 bg-surface-container-highest text-on-surface font-label-spec text-[10px] rounded-sm border border-outline-variant">WOOL</span>
+</div>
+</div>
+</article>
+</section>
+<!-- Horizontal Divider (Mobile) -->
+<div class="md:hidden w-full h-px stitched-divider-horizontal my-4"></div>
+<!-- Right Column: Partner B Options -->
+<section class="w-full md:w-2/3 flex flex-col relative z-10">
+<header class="mb-6 flex justify-between items-end">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-2 font-display-lg">Partner B Matches</h2>
+<span class="font-label-spec text-label-spec text-on-surface-variant uppercase">3 Coordinated Options Found</span>
+</div>
+<button class="hidden md:flex items-center gap-2 border border-primary text-primary px-4 py-2 font-label-spec text-label-spec hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+                    ADJUST PARAMS
+                </button>
+</header>
+<div class="flex flex-col gap-8">
+<!-- Option 1: Subtle Harmony -->
+<article class="bg-surface-container-lowest border border-outline-variant p-6 relative">
+<!-- Tier Label -->
+<div class="absolute -top-3 left-4 bg-[#EDE6D6] px-2">
+<span class="font-label-spec text-label-spec text-primary font-bold uppercase tracking-wider font-utility-mono">Tier I: Subtle Harmony</span>
+</div>
+<div class="flex flex-col md:flex-row gap-6 mt-2">
+<div class="w-full md:w-2/5 aspect-square md:aspect-auto md:h-48 bg-surface-dim relative overflow-hidden torn-corner hard-shadow">
+<img class="w-full h-full object-cover" data-alt="A high-end flat-lay photography shot of a women's outfit designed to subtly coordinate with a navy suit. It features a silk blouse in a soft cream color and a pleated midi skirt in deep forest green. The clothing is arranged meticulously on a raw silk textured background, with soft, directional lighting highlighting the fabric textures. The aesthetic is sophisticated, tactile, and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_XqK24SW3I8rfs9E-zB4WRoSv2a_agye79yw2dPI7JGFPn9dCWasywRs9k_Q8HYCysbPdIljDGJndZAgc395u1J10pKHZF6eDOsEkLA0RF3Dw0c8HVVerAWlAWTUAX4AaxYDuDvQjd-7lCORMJlQN5xzu-ocelItjYrPn3JCBpjNZCiXTzzDkqhz93xPorHSYFgp5k8dAkY4mr-kAffe--q5lett9z3FmuhlI6zDcpkngqUmAKPJQ6e9QjhGi2LADUNosWlbbEXw">
+</div>
+<div class="w-full md:w-3/5 flex flex-col justify-between">
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Coordinates through contrasting textures and complementary muted tones. Avoids direct color matching for a sophisticated nod.</p>
+<!-- Twin Swatch Motif -->
+<div class="flex items-center gap-4 mb-4">
+<span class="font-utility-mono text-utility-mono text-xs text-on-surface-variant">PALETTE SYNC:</span>
+<div class="flex relative w-12 h-6">
+<div class="absolute left-0 w-6 h-6 rounded-full bg-[#1e293b] border-2 border-[#EDE6D6] shadow-sm z-10"><span class="text-[8px] text-white flex items-center justify-center h-full">A</span></div>
+<div class="absolute left-4 w-6 h-6 rounded-full bg-[#14532d] border-2 border-outline-variant shadow-sm border-dashed z-0"><span class="text-[8px] text-white flex items-center justify-center h-full ml-2">B</span></div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-end mt-4 pt-4 border-t border-dashed border-outline-variant">
+<div class="flex flex-col font-utility-mono text-[11px] text-on-surface-variant gap-1">
+<span class="">INDEX: <span class="text-primary font-medium">82%</span> MATCH</span>
+<span class="">FORMALITY: <span class="text-primary font-medium">7.0/10</span></span>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2 font-label-spec text-label-spec rounded uppercase tracking-wider hover:bg-primary transition-colors flex items-center gap-2 shadow-sm" style="background-color: rgb(184, 147, 90);">
+<span class="material-symbols-outlined text-[16px]">checkroom</span>
+                                      Select
+                                  </button>
+</div>
+</div>
+</div>
+</article>
+<!-- Option 2: Balanced Co-Op -->
+<article class="bg-surface-container-lowest border border-outline-variant p-6 relative">
+<div class="absolute -top-3 left-4 bg-[#EDE6D6] px-2">
+<span class="font-label-spec text-label-spec text-primary font-bold uppercase tracking-wider font-utility-mono">Tier II: Balanced Co-Op</span>
+</div>
+<div class="flex flex-col md:flex-row gap-6 mt-2">
+<div class="w-full md:w-2/5 aspect-square md:aspect-auto md:h-48 bg-surface-dim relative overflow-hidden torn-corner hard-shadow">
+<img class="w-full h-full object-cover" data-alt="A high-end flat-lay photography shot of a women's outfit designed for balanced coordination with a navy suit. The outfit includes a sharply tailored blazer in a subtle charcoal check pattern and slim-fit trousers in a soft grey. The items are laid out precisely on a raw silk surface, illuminated by crisp, workshop-style lighting. The aesthetic is professional, sharp, and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrqOGgMSoRrnIRoJr1XjPJlZY60lUUEPcXyBgX8_L7DJuSwrP9hAtfjvjlkWLjR_0B7uZJBYRpP5JrrlhfgUjsmiFBEqNC8PqhUyuyh43ULIuXC9bNNO6FaPc_FDGOVJah7hTUGga3cYYuTbNeaL2rBF5QhCF-HHRRPGn3FefsT-_vhLkj3FgAY-5F3lU1ZeIlPQRP0zEvXCnJH0Pdhpfird2r-FAqHDp9V3iQ_MI9uuCMTmA4soaPinr-bGpqqYWShi_KLbcbtL4">
+</div>
+<div class="w-full md:w-3/5 flex flex-col justify-between">
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Shares structural elements and formality levels. Utilizes a shared grey base while diverging in the primary color block.</p>
+<div class="flex items-center gap-4 mb-4">
+<span class="font-utility-mono text-utility-mono text-xs text-on-surface-variant">PALETTE SYNC:</span>
+<div class="flex relative w-12 h-6">
+<div class="absolute left-0 w-6 h-6 rounded-full bg-[#1e293b] border-2 border-[#EDE6D6] shadow-sm z-10"></div>
+<div class="absolute left-4 w-6 h-6 rounded-full bg-[#4b5563] border-2 border-outline-variant shadow-sm border-dashed z-0"></div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-end mt-4 pt-4 border-t border-dashed border-outline-variant">
+<div class="flex flex-col font-utility-mono text-[11px] text-on-surface-variant gap-1">
+<span class="">INDEX: <span class="text-primary font-medium">91%</span> MATCH</span>
+<span class="">FORMALITY: <span class="text-primary font-medium">8.0/10</span></span>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2 font-label-spec text-label-spec rounded uppercase tracking-wider hover:bg-primary transition-colors flex items-center gap-2 shadow-sm" style="background-color: rgb(184, 147, 90);">
+<span class="material-symbols-outlined text-[16px]">checkroom</span>
+                                      Select
+                                  </button>
+</div>
+</div>
+</div>
+</article>
+<!-- Option 3: Direct Twinning -->
+<article class="bg-surface-container-lowest border border-outline-variant p-6 relative">
+<div class="absolute -top-3 left-4 bg-[#EDE6D6] px-2">
+<span class="font-label-spec text-label-spec text-primary font-bold uppercase tracking-wider font-utility-mono">Tier III: Direct Twinning</span>
+</div>
+<div class="flex flex-col md:flex-row gap-6 mt-2">
+<div class="w-full md:w-2/5 aspect-square md:aspect-auto md:h-48 bg-surface-dim relative overflow-hidden torn-corner hard-shadow">
+<img class="w-full h-full object-cover" data-alt="A high-end flat-lay photography shot of a women's outfit designed to directly twin with a men's navy suit. It features a tailored navy blue blazer dress with brass buttons, perfectly color-matched to the men's suit. The garment is laid out with precision on a raw silk background, lit by bright, clean light to emphasize the deep blue hue. The aesthetic is bold, unified, and premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAylcUizYK_o44zJ9AVNyVGQihS-7RIkyW2Bhn43Qt4S2n7oxYtJp-v-XAAHE1bl-8SSKfOOo_0u_B6AwTA12JX2Btgnay5U6Evv5MTNNk3TuLkP6VmXIuP-HvXG-c5vbqgiHc2cA3eVk__jXSCEZRvwbqZq7AGhm61S_g_LN_VAjj39tM-0yitWzBvMpZ6bSp1lzYLdL0WIpz6kpZwINFdzbZl0HmNFT7Z-u_l_un7pvRdrz5SXhilTiVpAUwwt9Sky76vC64aZ0A">
+</div>
+<div class="w-full md:w-3/5 flex flex-col justify-between">
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Exact color mirroring in primary garments. High visual impact designed for strong, unified presentation.</p>
+<div class="flex items-center gap-4 mb-4">
+<span class="font-utility-mono text-utility-mono text-xs text-on-surface-variant">PALETTE SYNC:</span>
+<div class="flex relative w-12 h-6">
+<div class="absolute left-0 w-6 h-6 rounded-full bg-[#1e293b] border-2 border-[#EDE6D6] shadow-sm z-10"></div>
+<div class="absolute left-4 w-6 h-6 rounded-full bg-[#1e293b] border-2 border-outline-variant shadow-sm border-dashed z-0"></div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-end mt-4 pt-4 border-t border-dashed border-outline-variant">
+<div class="flex flex-col font-utility-mono text-[11px] text-on-surface-variant gap-1">
+<span class="">INDEX: <span class="text-primary font-medium">98%</span> MATCH</span>
+<span class="">FORMALITY: <span class="text-primary font-medium">7.5/10</span></span>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2 font-label-spec text-label-spec rounded uppercase tracking-wider hover:bg-primary transition-colors flex items-center gap-2 shadow-sm" style="background-color: rgb(184, 147, 90);">
+<span class="material-symbols-outlined text-[16px]">checkroom</span>
+                                      Select
+                                  </button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation (Shared Component - Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 bg-surface border-t border-dashed border-outline-variant shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-spec text-label-spec mt-1">Today</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">checkroom</span>
+<span class="font-label-spec text-label-spec mt-1">Closet</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 translate-y-[-2px] duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_laundry_service</span>
+<span class="font-label-spec text-label-spec mt-1">Laundry</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-spec text-label-spec mt-1">History</span>
+</a>
+</nav>
+
+
+</body></html>

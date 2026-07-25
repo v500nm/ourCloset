@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ourCloset - Household Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#cae9de",
+                    "on-secondary-fixed": "#281800",
+                    "on-tertiary-container": "#b796a0",
+                    "secondary-container": "#fed394",
+                    "primary": "#08251e",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#2f3130",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#304c44",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#ffddae",
+                    "background": "#faf9f7",
+                    "surface-dim": "#dadad8",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#e1bdc8",
+                    "on-background": "#1a1c1b",
+                    "surface-container": "#eeeeec",
+                    "tertiary-fixed": "#fed9e4",
+                    "primary-container": "#1f3b33",
+                    "on-tertiary-fixed-variant": "#594049",
+                    "on-tertiary-fixed": "#2a151d",
+                    "on-secondary-container": "#795a26",
+                    "inverse-on-surface": "#f1f1ef",
+                    "tertiary-container": "#472f38",
+                    "secondary-fixed-dim": "#e9c083",
+                    "surface-container-highest": "#e3e2e0",
+                    "on-primary-container": "#87a59b",
+                    "surface-tint": "#48645b",
+                    "outline": "#727975",
+                    "outline-variant": "#c1c8c4",
+                    "secondary": "#785926",
+                    "on-surface-variant": "#414845",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#faf9f7",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#5d4210",
+                    "on-error-container": "#93000a",
+                    "surface": "#faf9f7",
+                    "surface-container-high": "#e9e8e6",
+                    "inverse-primary": "#aecdc2",
+                    "on-primary-fixed": "#032019",
+                    "surface-container-low": "#f4f3f2",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#301a22",
+                    "primary-fixed-dim": "#aecdc2",
+                    "surface-variant": "#e3e2e0",
+                    "on-surface": "#1a1c1b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": [
+                            "Domine"
+                    ],
+                    "display-lg-mobile": [
+                            "Domine"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "label-spec": [
+                            "JetBrains Mono"
+                    ],
+                    "display-lg": [
+                            "Domine"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "utility-mono": [
+                            "JetBrains Mono"
+                    ]
+            },
+            "fontSize": {
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-spec": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "display-lg": [
+                            "42px",
+                            {
+                                    "lineHeight": "48px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "utility-mono": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .stitching-divider {
+            border-bottom: 1px dashed rgba(43, 42, 40, 0.2);
+            /* dash: 4px, gap: 2px approximation */
+            background-image: linear-gradient(to right, rgba(43,42,40,0.2) 50%, transparent 50%);
+            background-position: bottom;
+            background-size: 6px 1px;
+            background-repeat: repeat-x;
+            border: none;
+            height: 1px;
+        }
+        .torn-swatch {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+        }
+        .spec-input {
+            border: none;
+            border-bottom: 2px solid #1f3b33;
+            background: transparent;
+            border-radius: 0;
+            padding: 8px 0;
+        }
+        .spec-input:focus {
+            outline: none;
+            box-shadow: none;
+            border-bottom-color: #785926;
+        }
+    </style>
+</head>
+<body class="bg-[#EDE6D6] text-on-background min-h-screen font-body-md">
+<!-- Header (No Global Nav Shell for Transactional/Setup) -->
+<header class="w-full px-margin-mobile md:px-margin-desktop py-6 flex justify-between items-center max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md text-primary tracking-tight">ourCloset</div>
+<div class="font-utility-mono text-utility-mono text-on-surface-variant uppercase">Setup Phase</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: Actions -->
+<div class="lg:col-span-5 flex flex-col gap-8">
+<div>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-2">Household Setup</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Configure your shared workshop to coordinate outfits, manage inventory, and seamlessly align your wardrobes.</p>
+</div>
+<!-- Create Household Card -->
+<div class="bg-[#faf9f7] rounded-xl border border-[#2B2A28]/10 p-6 torn-swatch relative overflow-hidden group hover:shadow-[1px_1px_0px_#2B2A28] transition-shadow">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-secondary-fixed rounded-lg text-on-secondary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_home</span>
+</div>
+<div class="flex-1">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">Create Household</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Establish a new shared environment and invite your partner.</p>
+<div class="space-y-4">
+<div class="flex flex-col">
+<label class="font-utility-mono text-utility-mono text-primary-container mb-1 uppercase">Household Name</label>
+<input class="spec-input font-body-md text-body-md" placeholder="e.g. The Smith Residence" type="text"/>
+</div>
+<div class="flex flex-col">
+<label class="font-utility-mono text-utility-mono text-primary-container mb-2 uppercase">Your Role</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded border border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-spec text-label-spec uppercase">Husband</button>
+<button class="px-4 py-2 rounded border border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-spec text-label-spec uppercase">Wife</button>
+<button class="px-4 py-2 rounded border border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-spec text-label-spec uppercase">Partner</button>
+</div>
+</div>
+<button class="w-full mt-4 bg-secondary text-on-secondary font-label-spec text-label-spec uppercase py-3 rounded-lg hover:opacity-90 transition-opacity">Initialize Setup</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2">
+<div class="h-px flex-1 bg-outline-variant/30 dashed"></div>
+<span class="font-utility-mono text-utility-mono text-on-surface-variant uppercase">OR</span>
+<div class="h-px flex-1 bg-outline-variant/30 dashed"></div>
+</div>
+<!-- Join Household Card -->
+<div class="bg-[#faf9f7] rounded-xl border border-[#2B2A28]/10 p-6 torn-swatch relative overflow-hidden group hover:shadow-[1px_1px_0px_#2B2A28] transition-shadow">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-surface-container-high rounded-lg text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">vpn_key</span>
+</div>
+<div class="flex-1">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">Join Household</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Enter an invite code provided by your partner.</p>
+<div class="flex flex-col gap-4">
+<div class="flex flex-col">
+<label class="font-utility-mono text-utility-mono text-primary-container mb-1 uppercase">Invite Code</label>
+<input class="spec-input font-utility-mono text-utility-mono tracking-widest text-lg" placeholder="XXXX-XXXX" type="text"/>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container font-label-spec text-label-spec uppercase py-3 rounded-lg hover:opacity-90 transition-opacity border border-primary-container">Authenticate Code</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Visual Explanation & Preview -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Bonding Explanation -->
+<div class="bg-primary-container text-on-primary-container rounded-xl p-8 flex flex-col md:flex-row gap-8 items-center border border-primary/20">
+<div class="flex-1 space-y-4">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary rounded-full border border-outline/30">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-utility-mono text-utility-mono uppercase text-xs">Partner Bonding</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-primary">Synergize Your Wardrobes</h3>
+<p class="font-body-md text-body-md text-on-primary-container/80">Bonding allows you to view each other's public inventory, coordinate outfits for events, and manage shared laundry cycles seamlessly.</p>
+<div class="mt-4 space-y-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-fixed">public</span>
+<div>
+<div class="font-label-spec text-label-spec uppercase text-on-primary">Public Items</div>
+<div class="font-body-sm text-body-sm text-on-primary-container/70">Visible for outfit coordination</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline-variant">lock</span>
+<div>
+<div class="font-label-spec text-label-spec uppercase text-on-primary">Private Items</div>
+<div class="font-body-sm text-body-sm text-on-primary-container/70">Kept strictly in your personal view</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Twin Swatches Illustration -->
+<div class="relative w-48 h-48 flex-shrink-0 flex items-center justify-center">
+<div class="absolute w-32 h-32 rounded-full bg-secondary-fixed/20 border-2 border-secondary-fixed dashed animate-pulse" style="left: 0; top: 20px;"></div>
+<div class="absolute w-32 h-32 rounded-full bg-primary-fixed/20 border-2 border-primary-fixed dashed animate-pulse" style="right: 0; top: 20px; animation-delay: 1s;"></div>
+<div class="absolute z-10 bg-primary rounded-full p-3 border border-outline">
+<span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
+</div>
+</div>
+</div>
+<!-- Preview of Bonded State -->
+<div class="bg-surface-container-low rounded-xl border border-[#2B2A28]/10 p-6 flex flex-col gap-4">
+<div class="flex justify-between items-end mb-2">
+<div>
+<div class="font-utility-mono text-utility-mono text-on-surface-variant uppercase mb-1">Preview Feature</div>
+<h4 class="font-headline-md text-headline-md text-primary">Twinning Suggestions</h4>
+</div>
+<span class="material-symbols-outlined text-outline">auto_awesome</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Partner 1 Preview -->
+<div class="bg-surface rounded-lg p-3 border border-outline-variant/30 shadow-[1px_1px_0px_#2B2A28] torn-swatch">
+<img class="w-full h-32 object-cover rounded mb-3 grayscale opacity-80 mix-blend-multiply" data-alt="A detailed flat lay photograph of a high-quality men's tailored outfit on a neutral raw silk textured background. The outfit includes a crisp white button-down shirt and a tailored navy blue blazer. Soft, studio lighting emphasizes the fabric textures. The aesthetic is clean, sophisticated, and professional, perfectly suited for a luxury wardrobe management interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaCcgPlTjTRa2uBz_zrkgINBairv8iVGoA-A3TMXL2WF3g4_hqTK67k80E9R1xqgSAOSd5r_DT_AXJOHkZx2vEapjKHF2DBhuLyRi7UM-Ia-qiz0AVgSzTBxFQsL2wAtfmp8scCPB_LZ364rl6zToRoGAKiSg9KxF4NtcMD6bnbd9YnQZ88I_6Mt45EU939wSphTe5UzzVgfvNlbvdC382c5lXSymVY9znzMwm0_ebdyG9S4Ih8zXjj2DOZm1XcRatbz5SgN_CYtc"/>
+<div class="font-label-spec text-label-spec uppercase text-primary mb-1">Navy Blazer</div>
+<div class="font-utility-mono text-utility-mono text-xs text-on-surface-variant">Husband Inventory</div>
+</div>
+<!-- Partner 2 Preview -->
+<div class="bg-surface rounded-lg p-3 border border-outline-variant/30 shadow-[1px_1px_0px_#2B2A28] torn-swatch relative">
+<div class="absolute top-4 left-4 bg-secondary text-on-secondary px-2 py-1 rounded text-xs font-utility-mono z-10 shadow">Match</div>
+<img class="w-full h-32 object-cover rounded mb-3 grayscale opacity-80 mix-blend-multiply" data-alt="A detailed flat lay photograph of a high-quality women's tailored outfit on a neutral raw silk textured background. The outfit includes an elegant navy blue silk blouse and a structured white skirt. Soft, studio lighting emphasizes the delicate fabric textures. The aesthetic is clean, sophisticated, and professional, perfectly complementing the men's outfit in a luxury wardrobe management interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaKrsS32a6ay6BaIj63yNFPK0EnNKSFamxfw0Ul_MlvHe6SC3qpL8n1kR-ALLbhyOpevfMWSO080UZX8dhIt6LOTdzyDpv4gYCE-whISuzOt0iqINdCpLG0dg_cq9HyzzaOIhBuS2eY3YWDL0sR1dGpeyhkNwykqKS5jamyxtpl639YtCia3RbmMCw0_SuYP7YpB62W2E-ebQWMBe9XJHyeVfyOg6D1bCP_n0isV8iKHxcZJxLmuWO8yYE-oHEhRUP34MvFF9KvxU"/>
+<div class="font-label-spec text-label-spec uppercase text-primary mb-1">Navy Silk Blouse</div>
+<div class="font-utility-mono text-utility-mono text-xs text-on-surface-variant">Wife Inventory</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

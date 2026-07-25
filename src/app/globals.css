@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───── Tailoring Workshop — Global Tokens ───── */
+:root {
+  --ink-bottle: #1F3B33;
+  --raw-silk: #EDE6D6;
+  --brass: #B8935A;
+  --sindoor: #C1543A;
+  --dusk-mauve: #9A7B85;
+  --charcoal-thread: #2B2A28;
+  --surface: #faf9f7;
+  --surface-container: #eeeeec;
+  --outline-variant: #c1c8c4;
+}
+
+/* ───── Base ───── */
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--charcoal-thread);
+  background: radial-gradient(circle at top left, var(--surface-container-lowest), var(--raw-silk));
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ───── Stitching Dividers (dashed seam lines) ───── */
+.stitching-border {
+  border-bottom: 1px dashed rgba(43, 42, 40, 0.2);
+}
+
+.stitching-border-full {
+  border-bottom: 1px dashed rgba(43, 42, 40, 0.15);
+  width: 100%;
+}
+
+/* ───── Torn Swatch (die-cut corner on item cards) ───── */
+.torn-swatch {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+/* ───── Modern Soft Shadow (matches floating navbar) ───── */
+.hard-shadow {
+  box-shadow: 0 10px 30px -10px rgba(8, 37, 30, 0.15), 0 4px 10px -4px rgba(8, 37, 30, 0.1);
+}
+
+.hard-shadow-brass {
+  box-shadow: 0 10px 30px -10px rgba(184, 147, 90, 0.25), 0 4px 10px -4px rgba(184, 147, 90, 0.15);
+}
+
+/* ───── Spec Label (mono uppercase stamp) ───── */
+.spec-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* ───── Brass surfaces ───── */
+.brass-bg {
+  background-color: var(--brass);
+}
+
+.brass-text {
+  color: var(--brass);
+}
+
+.raw-silk-bg {
+  background-color: var(--raw-silk);
+}
+
+/* ───── Ink-bottle overlay for modals ───── */
+.ink-overlay {
+  background-color: rgba(31, 59, 51, 0.4);
+}
+
+/* ───── Custom Scrollbar (hide for horizontal rails) ───── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ───── Reduced motion ───── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ───── Focus states (keyboard accessibility) ───── */
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+/* ───── Minimum tap targets (44×44pt mobile) ───── */
+@layer utilities {
+  .tap-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

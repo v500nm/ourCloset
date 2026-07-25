@@ -1,0 +1,296 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ourCloset - Laundry Board</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&amp;family=Inter:wght@400..600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f4f3f2",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#cae9de",
+                        "on-primary-fixed-variant": "#304c44",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-secondary-container": "#795a26",
+                        "tertiary-fixed-dim": "#e1bdc8",
+                        "on-secondary-fixed-variant": "#5d4210",
+                        "outline-variant": "#c1c8c4",
+                        "surface-container": "#eeeeec",
+                        "secondary": "#785926",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#48645b",
+                        "on-primary-container": "#87a59b",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#aecdc2",
+                        "on-tertiary-fixed-variant": "#594049",
+                        "secondary-container": "#fed394",
+                        "on-surface-variant": "#414845",
+                        "on-primary-fixed": "#032019",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1f3b33",
+                        "surface": "#faf9f7",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#e9c083",
+                        "background": "#faf9f7",
+                        "secondary-fixed": "#ffddae",
+                        "surface-dim": "#dadad8",
+                        "surface-container-high": "#e9e8e6",
+                        "inverse-on-surface": "#f1f1ef",
+                        "tertiary-container": "#472f38",
+                        "primary": "#08251e",
+                        "surface-variant": "#e3e2e0",
+                        "surface-bright": "#faf9f7",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#aecdc2",
+                        "outline": "#727975",
+                        "on-tertiary-container": "#b796a0",
+                        "on-background": "#1a1c1b",
+                        "on-tertiary-fixed": "#2a151d",
+                        "on-surface": "#1a1c1b",
+                        "tertiary-fixed": "#fed9e4",
+                        "tertiary": "#301a22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "container-max": "1200px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "label-spec": ["JetBrains Mono"],
+                        "display-lg": ["Domine"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "utility-mono": ["JetBrains Mono"],
+                        "display-lg-mobile": ["Domine"],
+                        "headline-md": ["Domine"]
+                    },
+                    "fontSize": {
+                        "label-spec": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg": ["42px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "utility-mono": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .stitching-divider {
+            border-bottom: 1px dashed var(--tw-colors-outline-variant);
+        }
+        .card-shadow {
+            box-shadow: 2px 2px 0px rgba(43, 42, 40, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen pb-24 md:pb-0 pt-20" style="background-color: rgb(237, 230, 214);">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-primary flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 border-b border-dashed border-outline-variant shadow-none" style="background-color: rgb(31, 59, 51);">
+<div class="flex items-center gap-4">
+<span class="font-display-lg-mobile md:font-display-lg text-on-primary">ourCloset</span>
+</div>
+<nav class="hidden md:flex gap-8 border-b-2 border-transparent">
+<a class="text-on-primary-fixed-variant font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors px-2 py-1 rounded" href="#">Today</a>
+<a class="text-on-primary-fixed-variant font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors px-2 py-1 rounded" href="#">Closet</a>
+<a class="text-on-primary font-bold border-b-2 border-secondary font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors px-2 py-1" href="#" style="border-color: rgb(184, 147, 90);">Laundry</a>
+<a class="text-on-primary-fixed-variant font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors px-2 py-1 rounded" href="#">History</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-primary hover:bg-primary-container/20 p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-8">
+<!-- Header Section -->
+<div class="mb-12 border-b-2 border-primary-container pb-4 border-solid">
+<h1 class="font-headline-md text-primary mb-2">Laundry Board</h1>
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-[#C1543A]"></span>
+<span class="font-label-spec text-label-spec text-on-surface-variant uppercase tracking-wider">7 items require attention</span>
+</div>
+</div>
+<!-- Filter/View Controls (Hanger Motif) -->
+<div class="flex gap-6 mb-8 border-b border-outline-variant/30 pb-2">
+<button class="relative pb-2 text-primary font-label-spec text-label-spec uppercase tracking-wide">
+                All Items
+                <div class="absolute bottom-[-1px] left-1/2 transform -translate-x-1/2 w-6 h-1 bg-secondary rounded-t-sm" style="background-color: rgb(184, 147, 90);"></div>
+</button>
+<button class="relative pb-2 text-on-surface-variant hover:text-primary font-label-spec text-label-spec uppercase tracking-wide transition-colors">
+                Dirty Only
+            </button>
+<button class="relative pb-2 text-on-surface-variant hover:text-primary font-label-spec text-label-spec uppercase tracking-wide transition-colors">
+                At Dry Cleaners
+            </button>
+</div>
+<!-- Grid View -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Item Card 1: Dirty -->
+<article class="bg-surface-container-low border border-outline-variant/50 rounded card-shadow overflow-hidden group" style="clip-path: polygon(0% 0%, 100% 0%, 100% 98%, 95% 100%, 90% 98%, 85% 100%, 80% 98%, 75% 100%, 70% 98%, 65% 100%, 60% 98%, 55% 100%, 50% 98%, 45% 100%, 40% 98%, 35% 100%, 30% 98%, 25% 100%, 20% 98%, 15% 100%, 10% 98%, 5% 100%, 0% 98%); font-family: &quot;IBM Plex Mono&quot;, monospace;">
+<div class="aspect-square w-full relative bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A meticulously folded white oxford dress shirt resting on a dark, rustic wooden tailor's table. Soft natural light highlights the crisp texture of the cotton fabric. The setting evokes a sense of organized, professional clothing care within a bespoke workshop environment. The color palette emphasizes clean whites against deep, warm wood tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLdgiFVP6hlfA6xn8dZws9POJMHauWN239h0tf9vCNBmrt_AtXwnjl93c5JzRDy07RQ3XRqxFIGTw8aIMeZ1B9sFhDgYOoXLQQEBNqxkflBgYm69KyFHWYdtw1RKwgrjAyy-BT1KBPlJNsbhqJVBFYu9FDa-TDJ2YkejCdDVDVYBkWBHHsEG204d6sx9mCwnzKh2kj15j1QdUywSOU7cWXP6HzW8Q2RntZv-xnjPN1HEW5DOWb-91AE7kdrnbeS3mREwfcVMRtAfQ">
+<!-- Status Overlay Indicator -->
+<div class="absolute top-2 right-2 bg-[#C1543A] text-white px-2 py-1 rounded flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">local_laundry_service</span>
+<span class="font-label-spec text-[10px] uppercase">Dirty</span>
+</div>
+</div>
+<div class="p-4 border-t border-dashed border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-body-md font-semibold text-primary">Oxford Dress Shirt</h3>
+<p class="font-utility-mono text-utility-mono text-on-surface-variant mt-1">Cotton / White</p>
+</div>
+</div>
+<!-- 4-Position Status Wheel Control (Linear for layout) -->
+<div class="mt-4 pt-4 border-t border-outline-variant/30">
+<p class="font-label-spec text-[10px] text-on-surface-variant mb-2 uppercase">Update Status</p>
+<div class="flex justify-between bg-surface-container-high rounded p-1">
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">check_circle</span>
+<span class="font-label-spec text-[9px] uppercase">Clean</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors bg-surface text-primary border border-outline-variant/30 shadow-sm">
+<span class="material-symbols-outlined text-[18px] mb-1 text-[#C1543A]">local_laundry_service</span>
+<span class="font-label-spec text-[9px] uppercase font-semibold">Dirty</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">water_drop</span>
+<span class="font-label-spec text-[9px] uppercase">In Wash</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">dry_cleaning</span>
+<span class="font-label-spec text-[9px] uppercase">Dry Clean</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Item Card 2: In Wash -->
+<article class="bg-surface-container-low border border-outline-variant/50 rounded card-shadow overflow-hidden group" style="clip-path: polygon(0% 0%, 100% 0%, 100% 98%, 95% 100%, 90% 98%, 85% 100%, 80% 98%, 75% 100%, 70% 98%, 65% 100%, 60% 98%, 55% 100%, 50% 98%, 45% 100%, 40% 98%, 35% 100%, 30% 98%, 25% 100%, 20% 98%, 15% 100%, 10% 98%, 5% 100%, 0% 98%); font-family: &quot;IBM Plex Mono&quot;, monospace;">
+<div class="aspect-square w-full relative bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A pair of raw selvedge denim jeans laid flat on a heavy canvas pressing mat. A brass measuring tape and tailor's chalk rest nearby. The lighting is focused, casting soft shadows that emphasize the denim's sturdy weave. The mood is industrial yet refined, utilizing dark indigo hues contrasting with brass accents in a workshop setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTAHCOoq1S1MFb0vcQVgXP-3b1Q8vrhRJIo3WGeseYo7Yvb9vxiXZ92CqBQcBTlud2b-4mNKvLeuURxyZ4-98AV6mXF1yyq5kGopuzKYDCtxurjF6Kdyor_586UMMWMdobdd9xHI6mUbqty6Qsue5DDSivCjk69g_-WiE_2OzIQ9mBOjERvwVnv91HFGs9xH5IdGIROHC18LXjGrZ3J_LYG41gxSKsgZgcBS-14qu5PB7yUCYqLHgGRjYVu2noDyI9TLqUhFSJjMQ">
+<div class="absolute top-2 right-2 bg-secondary text-on-secondary px-2 py-1 rounded flex items-center gap-1 shadow-sm" style="background-color: rgb(184, 147, 90);">
+<span class="material-symbols-outlined text-[14px]">water_drop</span>
+<span class="font-label-spec text-[10px] uppercase">In Wash</span>
+</div>
+</div>
+<div class="p-4 border-t border-dashed border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-body-md font-semibold text-primary">Selvedge Denim</h3>
+<p class="font-utility-mono text-utility-mono text-on-surface-variant mt-1">Heavyweight / Indigo</p>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/30">
+<p class="font-label-spec text-[10px] text-on-surface-variant mb-2 uppercase">Update Status</p>
+<div class="flex justify-between bg-surface-container-high rounded p-1">
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">check_circle</span>
+<span class="font-label-spec text-[9px] uppercase">Clean</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">local_laundry_service</span>
+<span class="font-label-spec text-[9px] uppercase">Dirty</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors bg-surface text-primary border border-outline-variant/30 shadow-sm">
+<span class="material-symbols-outlined text-[18px] mb-1 text-secondary" style="color: rgb(184, 147, 90);">water_drop</span>
+<span class="font-label-spec text-[9px] uppercase font-semibold">In Wash</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">dry_cleaning</span>
+<span class="font-label-spec text-[9px] uppercase">Dry Clean</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Item Card 3: Dry Cleaning -->
+<article class="bg-surface-container-low border border-outline-variant/50 rounded card-shadow overflow-hidden group" style="clip-path: polygon(0% 0%, 100% 0%, 100% 98%, 95% 100%, 90% 98%, 85% 100%, 80% 98%, 75% 100%, 70% 98%, 65% 100%, 60% 98%, 55% 100%, 50% 98%, 45% 100%, 40% 98%, 35% 100%, 30% 98%, 25% 100%, 20% 98%, 15% 100%, 10% 98%, 5% 100%, 0% 98%); font-family: &quot;IBM Plex Mono&quot;, monospace;">
+<div class="aspect-square w-full relative bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A luxurious dark wool winter coat draped elegantly over a sturdy wooden hanger in a softly lit dressing room. The texture of the thick wool is palpable under warm, directional lighting. The background features deep, moody tones like forest green and dark mahogany, creating a sophisticated, high-end tailoring atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE7SXfBL8iyNwoALr4bn_afYbvZ6tIhIttZYrpa1wPSV14NkqEckpEJD4GQrNJLfaxU9kIWExEMxPddKyoxKnJB73pxts_iRkBcSMjoxJC6nrHn766fLyE0OsGIXaldMPjERP8-KKkRsIvkqGBOzCYHejMZd34fIwDS_VQnnLRvZ6dPQvBLYKhnxER01JsCOnkLYP0EvSsAsVKvboK2KwfNfHGJBiFwhJJ9QPjAs67t4znDv4uoVHgvbiUyWYA1newcrqEMz1Nffw">
+<div class="absolute top-2 right-2 bg-primary-container text-on-primary-container px-2 py-1 rounded flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">dry_cleaning</span>
+<span class="font-label-spec text-[10px] uppercase">At Cleaners</span>
+</div>
+</div>
+<div class="p-4 border-t border-dashed border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-body-md font-semibold text-primary">Wool Overcoat</h3>
+<p class="font-utility-mono text-utility-mono text-on-surface-variant mt-1">Cashmere Blend / Charcoal</p>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/30">
+<p class="font-label-spec text-[10px] text-on-surface-variant mb-2 uppercase">Update Status</p>
+<div class="flex justify-between bg-surface-container-high rounded p-1">
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">check_circle</span>
+<span class="font-label-spec text-[9px] uppercase">Clean</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">local_laundry_service</span>
+<span class="font-label-spec text-[9px] uppercase">Dirty</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors text-on-surface-variant hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] mb-1">water_drop</span>
+<span class="font-label-spec text-[9px] uppercase">In Wash</span>
+</button>
+<button class="flex-1 flex flex-col items-center py-2 px-1 rounded transition-colors bg-surface text-primary border border-outline-variant/30 shadow-sm">
+<span class="material-symbols-outlined text-[18px] mb-1 text-primary-container">dry_cleaning</span>
+<span class="font-label-spec text-[9px] uppercase font-semibold">Dry Clean</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface dark:bg-surface-dim shadow-lg rounded-t-xl border-t border-dashed border-outline-variant flex justify-around items-center px-4 pb-safe h-16">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-spec text-label-spec">Today</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">checkroom</span>
+<span class="font-label-spec text-label-spec">Closet</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 hover:text-primary transition-all translate-y-[-2px] duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_laundry_service</span>
+<span class="font-label-spec text-label-spec">Laundry</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-spec text-label-spec">History</span>
+</a>
+</nav>
+
+
+</body></html>

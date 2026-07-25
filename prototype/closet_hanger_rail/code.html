@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ourCloset - Closet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f4f3f2",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#cae9de",
+                        "on-primary-fixed-variant": "#304c44",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-secondary-container": "#795a26",
+                        "tertiary-fixed-dim": "#e1bdc8",
+                        "on-secondary-fixed-variant": "#5d4210",
+                        "outline-variant": "#c1c8c4",
+                        "surface-container": "#eeeeec",
+                        "secondary": "#785926",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#48645b",
+                        "on-primary-container": "#87a59b",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#aecdc2",
+                        "on-tertiary-fixed-variant": "#594049",
+                        "secondary-container": "#fed394",
+                        "on-surface-variant": "#414845",
+                        "on-primary-fixed": "#032019",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1f3b33",
+                        "surface": "#faf9f7",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#e9c083",
+                        "background": "#faf9f7",
+                        "secondary-fixed": "#ffddae",
+                        "surface-dim": "#dadad8",
+                        "surface-container-high": "#e9e8e6",
+                        "inverse-on-surface": "#f1f1ef",
+                        "tertiary-container": "#472f38",
+                        "primary": "#08251e",
+                        "surface-variant": "#e3e2e0",
+                        "surface-bright": "#faf9f7",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#aecdc2",
+                        "outline": "#727975",
+                        "on-tertiary-container": "#b796a0",
+                        "on-background": "#1a1c1b",
+                        "on-tertiary-fixed": "#2a151d",
+                        "on-surface": "#1a1c1b",
+                        "tertiary-fixed": "#fed9e4",
+                        "tertiary": "#301a22",
+                        "brass": "#B8935A"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "container-max": "1200px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "label-spec": ["JetBrains Mono"],
+                        "display-lg": ["Domine"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "utility-mono": ["JetBrains Mono"],
+                        "display-lg-mobile": ["Domine"],
+                        "headline-md": ["Domine"]
+                    },
+                    "fontSize": {
+                        "label-spec": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg": ["42px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "utility-mono": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .torn-swatch {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+        }
+        .stitching-divider {
+            border-bottom: 1px dashed #c1c8c4;
+            /* Using outline-variant */
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24 md:pb-0" style="background-color: rgb(237, 230, 214);">
+<!-- Top Navigation (Web) -->
+<header class="hidden md:flex bg-primary dark:bg-primary-container justify-between items-center w-full px-margin-desktop py-4 border-b border-dashed border-outline-variant sticky top-0 z-40" style="background-color: rgb(31, 59, 51);">
+<div class="font-display-lg text-display-lg text-on-primary dark:text-on-primary-container tracking-tight">ourCloset</div>
+<nav class="flex gap-8">
+<a class="text-on-primary-fixed-variant font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors py-2 px-3 rounded" href="#">Today</a>
+<a class="text-on-primary font-bold border-b-2 border-secondary font-label-spec text-label-spec py-2 px-3 scale-95 duration-150" href="#">Closet</a>
+<a class="text-on-primary-fixed-variant font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors py-2 px-3 rounded" href="#">Laundry</a>
+<a class="text-on-primary-fixed-variant font-label-spec text-label-spec hover:bg-primary-container/20 transition-colors py-2 px-3 rounded" href="#">History</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-primary hover:bg-primary-container/20 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</header>
+<!-- Top Navigation (Mobile) -->
+<header class="md:hidden bg-primary dark:bg-primary-container flex justify-between items-center w-full px-margin-mobile py-4 border-b border-dashed border-outline-variant sticky top-0 z-40" style="background-color: rgb(31, 59, 51);">
+<div class="font-display-lg-mobile text-display-lg-mobile text-on-primary dark:text-on-primary-container tracking-tight">ourCloset</div>
+<button class="text-on-primary p-2">
+<span class="material-symbols-outlined">person</span>
+</button>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-8 space-y-12">
+<!-- Hero: Horizontal Hanger Rail -->
+<section aria-label="Daily Picks Rail">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Daily Picks</h2>
+<span class="font-utility-mono text-utility-mono text-on-surface-variant uppercase text-xs font-['IBM_Plex_Mono']">Rail 01</span>
+</div>
+<div class="relative w-full">
+<!-- Physical Rail Graphic -->
+<div class="absolute top-4 left-0 w-full h-1 bg-gradient-to-b from-outline to-surface-variant rounded-full z-0 shadow-sm" style="height: 2px; background: none; border-top: 2px dashed rgb(114, 121, 117);"></div>
+<div class="flex gap-4 overflow-x-auto scrollbar-hide py-8 px-2 relative z-10 snap-x snap-mandatory">
+<!-- Hanger Item 1 -->
+<div class="snap-start shrink-0 w-64 relative group">
+<!-- Hanger Hook -->
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 w-6 h-8 border-t-2 border-r-2 border-l-2 border-outline rounded-t-full rounded-bl-lg opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch group-hover:-translate-y-1 transition-transform duration-300">
+<div class="h-80 w-full relative">
+<img class="w-full h-full object-cover" data-alt="A pristine, light-mode product photograph of a tailored beige trench coat hanging straight against a neutral raw-silk textured background. The lighting is bright and even, highlighting the fabric's structure and brass button details, invoking a professional tailoring workshop aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdhpYiL4FAhqYrdlFZzkP4SA7Mwe2h3zhMz8c6dmh0HAOjDgwTw_9IN0nQVe0qkkuRrqihy2ptSJ8NTIwNgRZ2OuR_ygcNGjNA91MQtIomtjyM0L87KuKDhuuVPYvrOCUARdNumRU1xEveG9KHeBvsSNZV_OfnzH5itONS7nDw06JoBRL_tzZzBFVXDzHOFmx3fZkdgjnYfdCGqc7T10GBoLvtn4uGNoagJYCRCZMYJuUSeJWiASQeWN7pAY4UHP3UGC_hIKGEV0w">
+<div class="absolute top-2 right-2 bg-surface/90 font-utility-mono text-[10px] px-2 py-1 border border-outline-variant rounded shadow-sm text-on-surface font-['IBM_Plex_Mono']" style="background-color: rgb(184, 147, 90); color: white; font-family: &quot;IBM Plex Mono&quot;, monospace;">
+                                    CPW: $2.14
+                                </div>
+</div>
+<div class="p-3 bg-surface border-t border-dashed border-outline-variant flex justify-between items-center">
+<div>
+<p class="font-utility-mono text-utility-mono text-on-surface uppercase text-xs font-['IBM_Plex_Mono']">TR-COAT-01</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Beige Trench</p>
+</div>
+<span class="material-symbols-outlined text-outline text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Hanger Item 2 -->
+<div class="snap-start shrink-0 w-64 relative group">
+<!-- Hanger Hook -->
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 w-6 h-8 border-t-2 border-r-2 border-l-2 border-outline rounded-t-full rounded-bl-lg opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch group-hover:-translate-y-1 transition-transform duration-300">
+<div class="h-80 w-full relative">
+<img class="w-full h-full object-cover" data-alt="A studio shot of a crisp white cotton button-down shirt neatly pressed, displayed against a soft off-white canvas backdrop. High-key lighting emphasizes the clean lines and tailored fit, maintaining the structured, premium wardrobe aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlWE6HAZte9_3oshHKENjqFzOaAnX4Hwo1G2tc-Y98EaCJERx_Dgj-qNFE1v6AIA4MvMLxTHXsVCiQY2ZLVsx8cT69Ke2H81O5nAWVI-e-_f9foIcn6uAyZl8iJGg3S97whoNYLo9eRgUzPNHLO9M2UDBgp78MdgREiYLfj5T51jUmsN0A8CyQckF17WkAIOA6sJBUsHzIzEqMvgDdk-rZyyxdoibqANDPKWsRQsPzSNp-EFkIENdkpiofyglvk3waLdEmcDXHykE">
+<div class="absolute top-2 right-2 bg-surface/90 font-utility-mono text-[10px] px-2 py-1 border border-outline-variant rounded shadow-sm text-on-surface font-['IBM_Plex_Mono']" style="background-color: rgb(184, 147, 90); color: white; font-family: &quot;IBM Plex Mono&quot;, monospace;">
+                                    CPW: $0.85
+                                </div>
+<div class="absolute top-2 left-2 bg-error-container/90 text-on-error-container font-utility-mono text-[10px] px-1 py-1 rounded shadow-sm flex items-center justify-center font-['IBM_Plex_Mono']">
+<span class="material-symbols-outlined text-[14px]">local_laundry_service</span>
+</div>
+</div>
+<div class="p-3 bg-surface border-t border-dashed border-outline-variant flex justify-between items-center">
+<div>
+<p class="font-utility-mono text-utility-mono text-on-surface uppercase text-xs font-['IBM_Plex_Mono']">SH-WHT-02</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Oxford Button-Down</p>
+</div>
+<span class="material-symbols-outlined text-error text-sm">local_laundry_service</span>
+</div>
+</div>
+</div>
+<!-- Hanger Item 3 -->
+<div class="snap-start shrink-0 w-64 relative group">
+<!-- Hanger Hook -->
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 w-6 h-8 border-t-2 border-r-2 border-l-2 border-outline rounded-t-full rounded-bl-lg opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch group-hover:-translate-y-1 transition-transform duration-300">
+<div class="h-80 w-full relative">
+<img class="w-full h-full object-cover" data-alt="Detailed product photography of dark indigo raw denim jeans, folded neatly. The image highlights the heavy stitching and brass rivets. Set against a warm, light cream textured background to fit the tactile, tailoring workshop visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFa_a-VPpqa0Ifq2L6rIEYD4TmntDpdXfR0zhBMI5G3BeaxK3mXWLrfTe_lRr3NfGtRQEggyMV62GkE3wYEhDlY_Q1HBNI2Wd_CzjSLrH9N6DseOt8wE1p9T1_DHq97hVQ_63Wf7yUMUZdLov45AFf5rUYzzBI_rpIdXcT14-Ry7ExietpPq0ri6skyrTh6sP6fFYuLxoPNDUwy9lpbDRMVHkk7Bmf9fJ_B3Z92WCebuKVVGnf5R4ehgp4Hl2fRmFGriFam27bSf0">
+<div class="absolute top-2 right-2 bg-surface/90 font-utility-mono text-[10px] px-2 py-1 border border-outline-variant rounded shadow-sm text-on-surface font-['IBM_Plex_Mono']" style="background-color: rgb(184, 147, 90); color: white; font-family: &quot;IBM Plex Mono&quot;, monospace;">
+                                    CPW: $1.10
+                                </div>
+</div>
+<div class="p-3 bg-surface border-t border-dashed border-outline-variant flex justify-between items-center">
+<div>
+<p class="font-utility-mono text-utility-mono text-on-surface uppercase text-xs font-['IBM_Plex_Mono']">DN-RAW-04</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Selvedge Denim</p>
+</div>
+<span class="material-symbols-outlined text-outline text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Wardrobe Grid & Filters -->
+<section aria-label="Full Wardrobe">
+<div class="mb-6 space-y-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Inventory Archive</h2>
+<!-- Filters -->
+<div class="flex flex-wrap gap-2">
+<button class="bg-primary-container text-on-primary-container font-label-spec text-label-spec px-4 py-2 rounded-full border border-primary-container flex items-center gap-2 hover:bg-primary transition-colors">
+<span class="w-2 h-2 rounded-full bg-brass inline-block"></span> Western
+                     </button>
+<button class="bg-surface text-on-surface-variant font-label-spec text-label-spec px-4 py-2 rounded-full border border-outline-variant hover:border-outline hover:text-on-surface transition-colors">
+                         Indian Traditional
+                     </button>
+<button class="bg-surface text-on-surface-variant font-label-spec text-label-spec px-4 py-2 rounded-full border border-outline-variant hover:border-outline hover:text-on-surface transition-colors">
+                         Islamic-Modest
+                     </button>
+</div>
+</div>
+<!-- Bento Grid Layout for Inventory -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 auto-rows-[240px]">
+<!-- Grid Item 1 (Span 2 rows) -->
+<div class="col-span-2 row-span-2 bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch relative group">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A full-length light-mode editorial shot of a sharply tailored navy blue suit displayed against a minimalist raw-silk wall. Soft, directional light emphasizes the fabric drape and structure, creating a high-end, bespoke tailoring atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOX5TZr7NwL4wR8V2miT2z0i42vlkClFx2Pi1vkx-pw3KTDViHVSNc320ZSPtMarhoqVTNd2EQEuATOZcTNBvzwezi8MiDpy8EhhsrFuR942kboJZYgouy3Nw4X8wmeKsBSYeAdPtKEnSxQuZkthFhkYWVCc712F9HKYMt2MZwyYbz4FesSK3YGI2QTfS2Xurb19T2YjWuxv4AQpMkEjBlJoF4HHElDHdTj1JD2_KIjjbNZfFYvuP5i9AuBaSoGTaIwjvIWSovykY">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 right-0 p-4">
+<div class="bg-surface/90 inline-block px-2 py-1 rounded font-utility-mono text-utility-mono text-on-surface text-xs mb-2 border border-outline-variant font-['IBM_Plex_Mono']" style="background-color: rgb(184, 147, 90); color: white; font-family: &quot;IBM Plex Mono&quot;, monospace;">SU-NVY-01</div>
+<h3 class="font-headline-md text-headline-md text-white mb-1">Navy Wool Suit</h3>
+<div class="flex gap-2">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-label-spec px-2 py-1 rounded">CPW: $15.50</span>
+</div>
+</div>
+</div>
+<!-- Grid Item 2 -->
+<div class="col-span-1 row-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch relative flex flex-col">
+<div class="flex-grow relative">
+<img class="w-full h-full object-cover absolute inset-0" data-alt="A top-down layout of a folded cashmere sweater in light grey, placed meticulously on a tailor's cutting table. The setting is bright and orderly, with subtle measuring tape elements hinting at a professional wardrobe management system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVng3OIaUR1r-gK-BwZs9euwG5BlicWOi91ATToSABkeJeb4YUwOhTE_b19WuSJmkOWqqoBBqNfyPxLD8VCWlRUKDGedKWGd1PQ23ii2EUzMxed6z_3Vud0hBGO3zvxq8fnlpkc439Io5Et99SfrDgxH9Sn-5gQ0_BzpWqvAdR5eXjNCyOwKVvWMVnJMBYivC1RLG21i5KDSDPnNaC9S5hCMcGczH7fKrYlV-Rj_jS9IEWC9TJco2xCLh9mZeg6eZpTscZgyafRh4">
+<div class="absolute top-2 right-2 bg-surface/90 font-utility-mono text-[10px] px-2 py-1 border border-outline-variant rounded shadow-sm text-on-surface font-['IBM_Plex_Mono']" style="background-color: rgb(184, 147, 90); color: white; font-family: &quot;IBM Plex Mono&quot;, monospace;">CPW: $4.20</div>
+</div>
+<div class="p-2 bg-surface border-t border-dashed border-outline-variant h-14 flex items-center justify-between">
+<div class="overflow-hidden">
+<p class="font-utility-mono text-[10px] text-on-surface uppercase truncate font-['IBM_Plex_Mono']">KN-GRY-02</p>
+</div>
+<span class="material-symbols-outlined text-outline text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Grid Item 3 -->
+<div class="col-span-1 row-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch relative flex flex-col">
+<div class="flex-grow relative">
+<img class="w-full h-full object-cover absolute inset-0" data-alt="A crisp product shot of a pair of polished brown leather oxfords resting on a light-colored wooden surface. The lighting is soft but precise, reflecting a high-quality, curated closet aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1o8EAzHg_VvIvsUVFXuO344KVqnwsS_pAQ2DBWl3HsxPrVnDE1CWGRoPG8U5-uuaQmFRdJ7AP_DpkjTnpjKxKr8IV-giEJXpqP9RkY8J7CO-RlFeGHWdmDblyXrdAhGp64R4Qaw2RkZHbpRuPNsGIGgo03-_u0LgGOyEX3PZ3uW0tt8WTKu1XTm0JfFZ_W9TTsTVrC0vOk-qR7WqtDeRpmZ5bmu6jvgYpGHwAI6CA1TtU7WRIhATpQrG1fh6MXQfAtjJkBGv9KwA">
+<div class="absolute top-2 right-2 bg-surface/90 font-utility-mono text-[10px] px-2 py-1 border border-outline-variant rounded shadow-sm text-on-surface font-['IBM_Plex_Mono']" style="background-color: rgb(184, 147, 90); color: white; font-family: &quot;IBM Plex Mono&quot;, monospace;">CPW: $1.15</div>
+</div>
+<div class="p-2 bg-surface border-t border-dashed border-outline-variant h-14 flex items-center justify-between">
+<div class="overflow-hidden">
+<p class="font-utility-mono text-[10px] text-on-surface uppercase truncate font-['IBM_Plex_Mono']">SH-BRN-01</p>
+</div>
+<span class="material-symbols-outlined text-outline text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Grid Item 4 -->
+<div class="col-span-2 row-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden shadow-[2px_2px_0px_rgba(43,42,40,0.1)] torn-swatch relative flex">
+<div class="w-1/3 relative border-r border-dashed border-outline-variant">
+<img class="w-full h-full object-cover absolute inset-0" data-alt="A close-up of a folded silk pocket square with intricate paisley patterns, laid out flat on a cream-colored tailor's desk. The image focuses on texture and quality, adhering to the bright, premium workshop style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq1ndHB2AHoORu-LhWW5-E5NiqfM8G3iuoz22NoW_Q66SM7qZPQtvj-4LHjUUWwn8ONAbAKoXJY4pyk-WJGrhaZ-hDs2_8A8jz4ObHyaVHno3dyMkt-TUQgQQauXHWvNMy0HgzQJNyLk5PUJrXiOiqpQ13wb8zUVOJgAdigSxfWP0Ea_NCZPK4JmdnGx-_NM_yzL7mZ4T_OiqD2hZTGXBMZWB-PM4UGwU0d80mdf_SyQ5byDa1xm_Ks0kYaschjb_f19tDmwJnarA">
+</div>
+<div class="w-2/3 p-4 bg-surface flex flex-col justify-center">
+<div class="flex justify-between items-start mb-2">
+<p class="font-utility-mono text-utility-mono text-on-surface uppercase text-xs border border-outline-variant px-1 rounded inline-block font-['IBM_Plex_Mono']">AC-SLK-04</p>
+<div class="font-utility-mono text-[10px] px-2 py-1 border border-outline-variant rounded text-on-surface font-['IBM_Plex_Mono']">CPW: $0.45</div>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1">Paisley Silk Pocket Square</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">A versatile accessory for adding a touch of texture to formal wear.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 md:bottom-8 right-margin-mobile md:right-margin-desktop w-14 h-14 bg-[#B8935A] text-on-secondary shadow-lg rounded-full flex items-center justify-center hover:scale-105 transition-transform z-50 group">
+<span class="material-symbols-outlined text-[28px] group-hover:rotate-90 transition-transform duration-300">add</span>
+</button>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 bg-surface dark:bg-surface-dim rounded-t-xl border-t border-dashed border-outline-variant shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-spec text-label-spec">Today</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 translate-y-[-2px] duration-200" href="#">
+<span class="material-symbols-outlined">checkroom</span>
+<span class="font-label-spec text-label-spec">Closet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">local_laundry_service</span>
+<span class="font-label-spec text-label-spec">Laundry</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-spec text-label-spec">History</span>
+</a>
+</nav>
+
+
+</body></html>
