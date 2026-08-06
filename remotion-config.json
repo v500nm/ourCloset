@@ -1,0 +1,12 @@
+{
+  "outDir": "public/marketing-videos",
+  "videos": [
+    {
+      "id": "ourcloset_explore",
+      "title": "OurCloset - AI Wardrobe Manager",
+      "subtitle": "Intelligent Outfit Tracking & Recommendations",
+      "rawWebmPath": "public/auto-demos/ourcloset_explore.webm",
+      "themeColor": "#EC4899"
+    }
+  ]
+}
