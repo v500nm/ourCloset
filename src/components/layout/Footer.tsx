@@ -26,7 +26,7 @@ export const Footer: React.FC = () => {
     <footer className="border-t border-dashed border-outline-variant/40 bg-surface-container-low/30 py-12 mt-auto" id="site-footer">
       <div className="max-w-container mx-auto px-margin-mobile md:px-margin-desktop">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          
+
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="font-display font-bold text-lg text-primary hover:text-secondary transition-colors">
@@ -86,7 +86,7 @@ export const Footer: React.FC = () => {
                 <a href="https://github.com/v500nm" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors" title="GitHub">
                   <GithubIcon />
                 </a>
-                <a href="https://www.linkedin.com/in/adnan-mangaonkar-523351167/" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors" title="LinkedIn">
+                <a href="https://www.linkedin.com/in/adnan-mangaonkar/" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors" title="LinkedIn">
                   <LinkedinIcon />
                 </a>
               </li>

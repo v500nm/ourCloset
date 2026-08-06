@@ -5,6 +5,7 @@ import { HouseholdProvider } from '@/providers/HouseholdProvider';
 import { WardrobeProvider } from '@/providers/WardrobeProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { PWAInstallPrompt } from '@/components/ui/PWAInstallPrompt';
+import { PortfolioEcosystem } from '@/components/ui/PortfolioEcosystem';
 
 const siteUrl = 'https://ourcloset.adnan-mangaonkar.com';
 
@@ -160,6 +161,23 @@ export default function RootLayout({
             })
           }}
         />
+      
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "ourCloset",
+              url: "https://ourcloset.adnan-mangaonkar.com",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://ourcloset.adnan-mangaonkar.com/?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            }),
+          }}
+        />
       </head>
       <body className="bg-raw-silk text-charcoal-thread min-h-screen flex flex-col font-body text-body-md antialiased overflow-x-hidden" suppressHydrationWarning>
         <AuthProvider>
@@ -168,6 +186,7 @@ export default function RootLayout({
               <SmoothScrollProvider>
                 {children}
                 <PWAInstallPrompt />
+                <PortfolioEcosystem />
               </SmoothScrollProvider>
             </WardrobeProvider>
           </HouseholdProvider>
