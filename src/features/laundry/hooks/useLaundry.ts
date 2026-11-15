@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { LaundryFilterTab, LaundryStatus, WardrobeItem } from '../types/laundry.types';
-import { MOCK_WARDROBE } from '@/lib/mockData';
+import { LaundryFilterTab, LaundryStatus } from '../types/laundry.types';
 import { calculateLaundrySummary } from '../services/laundryService';
+import { useWardrobe } from '@/providers/WardrobeProvider';
 
 export function useLaundry() {
-  const [items, setItems] = useState<WardrobeItem[]>(MOCK_WARDROBE);
+  const { items, updateItemLaundryStatus } = useWardrobe();
   const [activeTab, setActiveTab] = useState<LaundryFilterTab>('ALL');
 
   const summary = calculateLaundrySummary(items);
@@ -18,9 +18,7 @@ export function useLaundry() {
   });
 
   const setStatus = (itemId: string, newStatus: LaundryStatus) => {
-    setItems((prev) =>
-      prev.map((i) => (i.id === itemId ? { ...i, laundry_status: newStatus } : i))
-    );
+    updateItemLaundryStatus(itemId, newStatus);
   };
 
   return {

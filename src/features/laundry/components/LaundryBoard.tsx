@@ -4,6 +4,7 @@ import React from 'react';
 import { useLaundry } from '../hooks/useLaundry';
 import { Badge, Card, StatusWheel } from '@/components';
 import { MotionText, MotionContainer } from '@/components/ui/motionText';
+import { GarmentThumb } from '@/components/ui/garmentThumb';
 
 export const LaundryBoard: React.FC = () => {
   const { items, activeTab, setActiveTab, summary, setStatus } = useLaundry();
@@ -70,11 +71,7 @@ export const LaundryBoard: React.FC = () => {
             <Card key={item.id} className="p-0 overflow-hidden flex flex-col justify-between">
               {/* Garment Image & Status Badge */}
               <div className="relative aspect-[4/3] w-full bg-surface-container overflow-hidden">
-                <img
-                  src={item.image_url}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
+                <GarmentThumb item={item} className="w-full h-full object-cover" />
 
                 <div className="absolute top-3 right-3">
                   {item.laundry_status === 'DIRTY' && <Badge variant="dirty">DIRTY</Badge>}

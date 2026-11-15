@@ -1,9 +1,17 @@
 /** TDD §3 — Ingestion Pipeline types. */
 
-export type ItemCategory = 'top' | 'bottom' | 'one_piece' | 'outerwear' | 'footwear' | 'watch' | 'belt' | 'accessory';
-export type CulturalStyle = 'western' | 'indian_traditional' | 'islamic_modest';
-export type HardwareMetalColor = 'gold' | 'silver' | 'rose_gold' | 'black';
-export type LeatherTone = 'black' | 'tan' | 'dark_brown';
+import {
+  ItemCategory as TaxonomyItemCategory,
+  CulturalStyle as TaxonomyCulturalStyle,
+  HardwareMetalColor as TaxonomyHardwareMetalColor,
+  LeatherTone as TaxonomyLeatherTone,
+  FormalityLevel,
+} from '@/types/taxonomy.types';
+
+export type ItemCategory = TaxonomyItemCategory;
+export type CulturalStyle = TaxonomyCulturalStyle;
+export type HardwareMetalColor = TaxonomyHardwareMetalColor;
+export type LeatherTone = TaxonomyLeatherTone;
 
 export interface AutoTagResult {
   category: ItemCategory | null;
@@ -12,12 +20,13 @@ export interface AutoTagResult {
   secondaryColorHex: string | null;
   hardwareMetalColor: HardwareMetalColor | null;
   leatherTone: LeatherTone | null;
-  formalityLevel: number | null;
+  formalityLevel: FormalityLevel | null;
   confidence: number;
 }
 
 export interface IngestionItem {
   imageFile: File;
+  title?: string;
   processedImageUrl?: string;
   autoTags: AutoTagResult;
   userCorrectedTags?: Partial<AutoTagResult>;

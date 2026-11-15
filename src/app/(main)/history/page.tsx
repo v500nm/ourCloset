@@ -1,9 +1,15 @@
+'use client';
+
+import React from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { HistoryTimeline } from '@/features/outfit-history';
 import { GapAnalysisHeatmap } from '@/features/analytics';
-import { MOCK_HISTORY } from '@/lib/mockData';
 import { StitchingDivider } from '@/components';
+import { outfitRepository } from '@/data/repositories/outfitRepository';
 
 export default function HistoryPage() {
+  const history = useLiveQuery(() => outfitRepository.getAll(), []) || [];
+
   return (
     <div className="space-y-10">
       <div>
@@ -22,7 +28,7 @@ export default function HistoryPage() {
         <h2 className="spec-label text-primary uppercase tracking-wider mb-4 block">
           Recent Logged Outfits
         </h2>
-        <HistoryTimeline history={MOCK_HISTORY} />
+        <HistoryTimeline history={history} />
       </section>
 
       <StitchingDivider />

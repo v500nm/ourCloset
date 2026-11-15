@@ -23,6 +23,7 @@ export default function ClosetPage() {
     updateItemLaundryStatus,
     addItem,
     removeItem,
+    loadSampleWardrobe,
     loading,
   } = useWardrobeItems('western');
 
@@ -44,6 +45,26 @@ export default function ClosetPage() {
       </section>
 
       <StitchingDivider />
+
+      {/* Empty State with Explicit Seeding Action */}
+      {allItems.length === 0 && !loading && (
+        <div className="p-8 text-center bg-surface-container-lowest torn-swatch border border-outline-variant/30 rounded-lg space-y-4 my-6">
+          <span className="material-symbols-outlined text-5xl text-primary/40">checkroom</span>
+          <div>
+            <h3 className="font-display text-title-lg text-primary">Your Closet is Pristine</h3>
+            <p className="text-body-sm text-on-surface-variant max-w-md mx-auto mt-1">
+              Start by adding your first garment photo with the &ldquo;+&rdquo; button, or load our curated sample wardrobe to preview cultural twinning and outfit coordination.
+            </p>
+          </div>
+          <button
+            onClick={() => loadSampleWardrobe()}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded font-mono text-xs uppercase tracking-wider hover:bg-primary/90 transition-all shadow"
+          >
+            <span className="material-symbols-outlined text-sm">inventory_2</span>
+            Load Sample Wardrobe
+          </button>
+        </div>
+      )}
 
       {/* Inventory Archive — Grid with Cultural & Category Filters */}
       <section>

@@ -1,24 +1,33 @@
 'use client';
 
 import React from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { Card } from '@/components';
 import { CULTURAL_STYLES } from '@/types';
+import { wardrobeRepository } from '@/data/repositories/wardrobeRepository';
 
 export const GapAnalysisHeatmap: React.FC = () => {
   const formalities = [1, 2, 3, 4, 5];
+  const items = useLiveQuery(() => wardrobeRepository.getAll(), []) || [];
 
-  // Matrix coverage mock (cultural_style x formality_level)
-  const coverageMap: Record<string, number> = {
-    'western-1': 1,
-    'western-2': 4,
-    'western-3': 6,
-    'western-4': 3,
-    'western-5': 1,
-    'indian_traditional-3': 2,
-    'indian_traditional-5': 1,
-    'islamic_modest-3': 1,
-    'islamic_modest-4': 1,
-  };
+  // Live coverage map (cultural_style x formality_level)
+  const coverageMap: Record<string, number> = {};
+  for (const item of items) {
+    if (item.deleted_at) continue;
+    const key = `${item.cultural_style}-${item.formality_level}`;
+    coverageMap[key] = (coverageMap[key] || 0) + 1;
+  }
+
+  // Find all gaps where high formality (F4/F5) has 0 items
+  const flaggedGaps: string[] = [];
+  for (const style of CULTURAL_STYLES) {
+    for (const f of [4, 5]) {
+      const count = coverageMap[`${style.id}-${f}`] || 0;
+      if (count === 0) {
+        flaggedGaps.push(`${style.label} (Formality ${f})`);
+      }
+    }
+  }
 
   return (
     <Card className="p-6">
@@ -26,11 +35,17 @@ export const GapAnalysisHeatmap: React.FC = () => {
         <div>
           <h3 className="font-display text-headline-md text-primary">Wardrobe Gap Analysis</h3>
           <p className="text-xs text-on-surface-variant font-body">
-            Heatmap of Cultural Style × Formality Index coverage.
+            Live matrix of Cultural Style × Formality Index from your cupboard inventory ({items.length} total items).
           </p>
         </div>
-        <span className="spec-label text-sindoor bg-error-container/50 px-2.5 py-1 rounded text-[10px]">
-          1 Gap Flagged
+        <span
+          className={`spec-label px-2.5 py-1 rounded text-[10px] font-mono ${
+            flaggedGaps.length > 0
+              ? 'text-sindoor bg-error-container/50'
+              : 'text-emerald-800 bg-emerald-100'
+          }`}
+        >
+          {flaggedGaps.length > 0 ? `${flaggedGaps.length} Gaps Flagged` : 'Balanced Coverage'}
         </span>
       </div>
 
@@ -59,7 +74,7 @@ export const GapAnalysisHeatmap: React.FC = () => {
                   return (
                     <td key={f} className="py-3 px-3">
                       <div
-                        className={`w-8 h-8 mx-auto rounded flex items-center justify-center font-bold text-xs ${
+                        className={`w-8 h-8 mx-auto rounded flex items-center justify-center font-bold text-xs transition-colors ${
                           count > 3
                             ? 'bg-primary text-on-primary'
                             : count > 0
@@ -81,10 +96,15 @@ export const GapAnalysisHeatmap: React.FC = () => {
         </table>
       </div>
 
-      <div className="mt-4 p-3 bg-error-container/30 border border-sindoor/30 rounded text-xs text-sindoor flex items-center gap-2">
-        <span className="material-symbols-outlined text-sm">warning</span>
-        <span>Gap Flagged: No Formality 4-5 Islamic-Modest outerwear in inventory.</span>
-      </div>
+      {flaggedGaps.length > 0 && (
+        <div className="mt-4 p-3 bg-error-container/30 border border-sindoor/30 rounded text-xs text-sindoor flex items-start gap-2">
+          <span className="material-symbols-outlined text-sm mt-0.5">warning</span>
+          <div>
+            <span className="font-bold">Missing Event Coverage: </span>
+            <span>No formal options available in: {flaggedGaps.join(', ')}.</span>
+          </div>
+        </div>
+      )}
     </Card>
   );
 };

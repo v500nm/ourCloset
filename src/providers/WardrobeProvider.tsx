@@ -1,84 +1,101 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { WardrobeItem } from '@/types';
-import { MOCK_WARDROBE } from '@/lib/mockData';
+import { wardrobeRepository } from '@/data/repositories/wardrobeRepository';
+import { applyWeeklyReset } from '@/features/laundry/services/laundryReset';
+import { requestStoragePersistence } from '@/data/storage/storageQuota';
+import { seedSampleWardrobe } from '@/data/seed/sampleWardrobe';
 
 interface WardrobeContextProps {
   items: WardrobeItem[];
-  addItem: (item: WardrobeItem) => void;
-  removeItem: (id: string) => void;
-  markItemsDirty: (ids: string[]) => void;
-  updateItemLaundryStatus: (id: string, status: WardrobeItem['laundry_status']) => void;
+  isLoading: boolean;
+  addItem: (item: WardrobeItem) => Promise<void>;
+  removeItem: (id: string) => Promise<void>;
+  markItemsDirty: (ids: string[]) => Promise<void>;
+  updateItemLaundryStatus: (id: string, status: WardrobeItem['laundry_status']) => Promise<void>;
+  loadSampleWardrobe: () => Promise<void>;
 }
 
 const WardrobeContext = createContext<WardrobeContextProps | undefined>(undefined);
 
 export const WardrobeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<WardrobeItem[]>(MOCK_WARDROBE);
+  // Reactive query from Dexie IndexedDB
+  const liveItems = useLiveQuery(() => wardrobeRepository.getAll(), []);
   const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
-    // 1. Get current time
-    const now = new Date();
-    
-    // 2. Check last reset time from localStorage
-    const storedLastReset = localStorage.getItem('lastLaundryReset');
-    let lastResetDate = storedLastReset ? new Date(storedLastReset) : null;
+    // 1. Request persistent storage from browser
+    requestStoragePersistence();
 
-    // 3. Find when the most recent Sunday 11:59 PM was
-    // JS Date getDay(): 0 = Sunday, 1 = Monday, etc.
-    const mostRecentSunday = new Date(now);
-    mostRecentSunday.setDate(now.getDate() - now.getDay()); // Go back to Sunday
-    mostRecentSunday.setHours(23, 59, 59, 999); // End of Day
+    // 2. Perform laundry reset calculation using pure helper
+    const checkLaundryReset = async () => {
+      try {
+        const storedLastReset = typeof window !== 'undefined' ? localStorage.getItem('lastLaundryReset') : null;
+        const lastResetDate = storedLastReset ? new Date(storedLastReset) : null;
+        const now = new Date();
 
-    // If today is Sunday but before 11:59 PM, the "most recent" reset window was actually LAST Sunday.
-    if (now.getDay() === 0 && now.getTime() < mostRecentSunday.getTime()) {
-      mostRecentSunday.setDate(mostRecentSunday.getDate() - 7);
-    }
+        const allCurrentItems = await wardrobeRepository.getAll();
+        const resetResult = applyWeeklyReset(allCurrentItems, now, lastResetDate);
 
-    // 4. If we have no record, or the last reset was BEFORE the most recent Sunday EOD, reset clothes!
-    if (!lastResetDate || lastResetDate.getTime() < mostRecentSunday.getTime()) {
-      setItems(prev => prev.map(item => {
-        if (item.laundry_status === 'DIRTY') {
-          return { ...item, laundry_status: 'CLEAN' };
+        if (resetResult.resetApplied) {
+          const dirtyItemIds = allCurrentItems
+            .filter(item => item.laundry_status === 'DIRTY')
+            .map(item => item.id);
+
+          for (const id of dirtyItemIds) {
+            await wardrobeRepository.updateLaundryStatus(id, 'CLEAN');
+          }
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('lastLaundryReset', resetResult.newResetDate.toISOString());
+          }
         }
-        return item;
-      }));
-      // Record the new reset time (as the most recent Sunday to prevent re-runs until next week)
-      localStorage.setItem('lastLaundryReset', mostRecentSunday.toISOString());
-      console.log('🧺 [WardrobeProvider] Sunday EOD Passed: All dirty clothes have been washed and reset to CLEAN!');
-    }
+      } catch (err) {
+        console.warn('[WardrobeProvider] Weekly laundry check encountered error:', err);
+      } finally {
+        setHasInitialized(true);
+      }
+    };
 
-    setHasInitialized(true);
+    checkLaundryReset();
   }, []);
 
-  const addItem = (item: WardrobeItem) => {
-    setItems((prev) => [item, ...prev]);
+  const addItem = async (item: WardrobeItem) => {
+    await wardrobeRepository.create(item);
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const removeItem = async (id: string) => {
+    await wardrobeRepository.delete(id);
   };
 
-  const markItemsDirty = (ids: string[]) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        ids.includes(item.id) ? { ...item, laundry_status: 'DIRTY', last_worn_at: new Date().toISOString() } : item
-      )
-    );
+  const markItemsDirty = async (ids: string[]) => {
+    await wardrobeRepository.markDirty(ids);
   };
 
-  const updateItemLaundryStatus = (id: string, status: WardrobeItem['laundry_status']) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, laundry_status: status } : item
-      )
-    );
+  const updateItemLaundryStatus = async (id: string, status: WardrobeItem['laundry_status']) => {
+    await wardrobeRepository.updateLaundryStatus(id, status);
   };
+
+  const loadSampleWardrobe = async () => {
+    await seedSampleWardrobe();
+  };
+
+  const items = liveItems || [];
+  const isLoading = liveItems === undefined && !hasInitialized;
 
   return (
-    <WardrobeContext.Provider value={{ items, addItem, removeItem, markItemsDirty, updateItemLaundryStatus }}>
+    <WardrobeContext.Provider
+      value={{
+        items,
+        isLoading,
+        addItem,
+        removeItem,
+        markItemsDirty,
+        updateItemLaundryStatus,
+        loadSampleWardrobe,
+      }}
+    >
       {children}
     </WardrobeContext.Provider>
   );

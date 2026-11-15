@@ -1,20 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { WardrobeItem, CulturalStyle, ItemCategory, LaundryStatus } from '@/types';
+import { CulturalStyle, ItemCategory } from '@/types';
 import { useWardrobe } from '@/providers/WardrobeProvider';
 
 export function useWardrobeItems(initialStyle: CulturalStyle = 'western') {
-  const { items, addItem, removeItem, updateItemLaundryStatus } = useWardrobe();
+  const { items, addItem, removeItem, updateItemLaundryStatus, loadSampleWardrobe, isLoading } = useWardrobe();
   const [selectedStyle, setSelectedStyle] = useState<CulturalStyle>(initialStyle);
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory | 'all'>('all');
   const [laundryFilter, setLaundryFilter] = useState<'ALL' | 'DIRTY_ONLY' | 'DRY_CLEANING'>('ALL');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!isLoading) {
+      setLoading(false);
+    }
+  }, [isLoading]);
 
   const filteredItems = items.filter((item) => {
     const matchesStyle = selectedStyle ? item.cultural_style === selectedStyle : true;
@@ -29,8 +30,6 @@ export function useWardrobeItems(initialStyle: CulturalStyle = 'western') {
     return matchesStyle && matchesCategory;
   });
 
-
-
   return {
     items: filteredItems,
     allItems: items,
@@ -43,6 +42,7 @@ export function useWardrobeItems(initialStyle: CulturalStyle = 'western') {
     addItem,
     removeItem,
     updateItemLaundryStatus,
+    loadSampleWardrobe,
     loading,
   };
 }

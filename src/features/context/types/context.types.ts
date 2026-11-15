@@ -10,6 +10,8 @@ export interface ContextAttributes {
   warmth: 'low' | 'neutral' | 'high';
   modesty: 'low' | 'medium' | 'high';
   culturalStyle: CulturalStyle;
+  confidence?: number;
+  matchReason?: string;
 }
 
 export interface ContextState {

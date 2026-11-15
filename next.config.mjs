@@ -17,6 +17,9 @@ const nextConfig = {
 
   // Prevent Next.js from bundling server-side WASM modules incorrectly for Xenova Transformers
   serverExternalPackages: ['@xenova/transformers'],
+  experimental: {
+    webpackBuildWorker: false,
+  },
   webpack: (config) => {
     // Enable WASM support in Webpack
     config.experiments = {
@@ -24,6 +27,7 @@ const nextConfig = {
       asyncWebAssembly: true,
       layers: true,
     };
+    config.parallelism = 1;
     return config;
   },
 };

@@ -4,6 +4,7 @@ import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvide
 import { HouseholdProvider } from '@/providers/HouseholdProvider';
 import { WardrobeProvider } from '@/providers/WardrobeProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
+import { SyncBootstrap } from '@/components/providers/SyncBootstrap';
 import { PWAInstallPrompt } from '@/components/ui/PWAInstallPrompt';
 import { PortfolioEcosystem } from '@/components/ui/PortfolioEcosystem';
 
@@ -181,6 +182,7 @@ export default function RootLayout({
       </head>
       <body className="bg-raw-silk text-charcoal-thread min-h-screen flex flex-col font-body text-body-md antialiased overflow-x-hidden" suppressHydrationWarning>
         <AuthProvider>
+          <SyncBootstrap />
           <HouseholdProvider>
             <WardrobeProvider>
               <SmoothScrollProvider>

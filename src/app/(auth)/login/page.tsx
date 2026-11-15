@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { login, loginWithQuickCode } = useAuth();
+  const { login, loginWithQuickCode, continueAsGuest } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -126,6 +126,17 @@ export default function LoginPage() {
               <Button type="submit" className="w-full justify-center py-3 mt-2" disabled={isSubmitting}>
                 {isSubmitting ? 'Authenticating...' : 'Sign In'}
               </Button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  continueAsGuest();
+                  router.push('/today');
+                }}
+                className="w-full text-center py-2 text-xs font-mono text-primary/70 hover:text-secondary transition-colors"
+              >
+                Continue as Guest (Offline Mode)
+              </button>
               
               {mode === 'standard' && (
                 <div className="text-center mt-4">

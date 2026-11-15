@@ -1,43 +1,82 @@
 import { TwinningTierOption } from '../types/twinning.types';
-import { MOCK_WARDROBE } from '@/lib/mockData';
+import { WardrobeItem, FormalityLevel, CulturalStyle } from '@/types';
+import { wardrobeRepository } from '@/data/repositories/wardrobeRepository';
+import { generateTwinningTiersEngine } from '@/engine';
+import { getSampleWardrobe } from '@/data/seed/sampleWardrobe';
 
+/**
+ * Connects the pure outfit engine to the front-end twinning service.
+ * Zero mock imports. Queries typed IndexedDB repository with graceful fallbacks.
+ */
 export async function generateTwinningTiers(
-  eventContext: string
+  eventContext: string,
+  initiatorItems?: WardrobeItem[],
+  partnerWardrobe?: WardrobeItem[]
 ): Promise<TwinningTierOption[]> {
-  const husbandSuit = MOCK_WARDROBE.find((i) => i.id === 'SU-NVY-01') || MOCK_WARDROBE[3];
-  const wifeAbaya = MOCK_WARDROBE.find((i) => i.id === 'AB-BLK-01') || MOCK_WARDROBE[8];
-  const wifeHijab = MOCK_WARDROBE.find((i) => i.id === 'HJ-SLK-02') || MOCK_WARDROBE[9];
-  const husbandKurta = MOCK_WARDROBE.find((i) => i.id === 'KJ-WHT-01') || MOCK_WARDROBE[7];
-  const husbandSherwani = MOCK_WARDROBE.find((i) => i.id === 'SK-GLD-01') || MOCK_WARDROBE[6];
-  const wifeBlazer = MOCK_WARDROBE.find((i) => i.id === 'BL-LNN-01') || MOCK_WARDROBE[10];
+  const now = new Date();
 
-  return [
-    {
-      tier: 'subtle',
-      label: 'Subtle Harmony',
-      description: 'Accessories & metal accents harmonize without direct color duplication.',
-      colorWeight: 0.8,
-      silhouetteWeight: 0.2,
-      partnerOutfit: [wifeHijab, wifeBlazer],
-      matchReason: 'Dusk mauve hijab matches navy suit lapel undertone & gold hardware accent.',
+  // 1. Resolve wardrobe sources
+  let allItems: WardrobeItem[] = [];
+  if (!initiatorItems || !partnerWardrobe) {
+    allItems = await wardrobeRepository.getAll();
+    if (allItems.length === 0) {
+      allItems = getSampleWardrobe();
+    }
+  }
+
+  // Identify initiator items (e.g. husband / initiator) and partner items (e.g. wife)
+  const resolvedInitiator =
+    initiatorItems && initiatorItems.length > 0
+      ? initiatorItems
+      : allItems.filter((i) => i.user_id === 'm-adnan' || i.user_id.includes('husband'));
+
+  const resolvedPartner =
+    partnerWardrobe && partnerWardrobe.length > 0
+      ? partnerWardrobe
+      : allItems.filter((i) => i.user_id !== 'm-adnan' && !i.user_id.includes('husband'));
+
+  // Fallbacks if one side is empty
+  const finalInitiator = resolvedInitiator.length > 0 ? resolvedInitiator : allItems.slice(0, 3);
+  const finalPartner = resolvedPartner.length > 0 ? resolvedPartner : allItems.slice(3);
+
+  // Derive target formality and cultural style from eventContext
+  let targetFormality: FormalityLevel = 4;
+  let culturalStyle: CulturalStyle = finalInitiator[0]?.cultural_style || 'western';
+
+  const contextLower = eventContext.toLowerCase();
+  if (contextLower.includes('wedding') || contextLower.includes('gala') || contextLower.includes('reception')) {
+    targetFormality = 5;
+  } else if (contextLower.includes('office') || contextLower.includes('review') || contextLower.includes('dinner')) {
+    targetFormality = 3;
+  } else if (contextLower.includes('casual') || contextLower.includes('brunch') || contextLower.includes('house')) {
+    targetFormality = 2;
+  }
+
+  if (contextLower.includes('sangeet') || contextLower.includes('mehendi') || contextLower.includes('diwali') || contextLower.includes('shaadi')) {
+    culturalStyle = 'indian_traditional';
+  } else if (contextLower.includes('eid') || contextLower.includes('jummah') || contextLower.includes('walima') || contextLower.includes('modest')) {
+    culturalStyle = 'islamic_modest';
+  }
+
+  // Execute pure outfit engine
+  const tierResults = generateTwinningTiersEngine({
+    initiatorItems: finalInitiator,
+    partnerWardrobe: finalPartner,
+    context: {
+      targetFormality,
+      culturalStyle,
+      modestyFloor: culturalStyle === 'islamic_modest',
     },
-    {
-      tier: 'balanced',
-      label: 'Balanced Co-Op',
-      description: 'Formality index matched ±1 band with complementary palette weight.',
-      colorWeight: 0.5,
-      silhouetteWeight: 0.5,
-      partnerOutfit: [wifeAbaya],
-      matchReason: 'Formality 4 match. Linen abaya matches trench coat structure.',
-    },
-    {
-      tier: 'direct',
-      label: 'Direct Twinning',
-      description: 'Identical cultural style & exact colorway pairing for festive events.',
-      colorWeight: 0.3,
-      silhouetteWeight: 0.7,
-      partnerOutfit: [husbandSherwani],
-      matchReason: 'Gold Zari zari work directly coordinates with gold embroidery accents.',
-    },
-  ];
+    now,
+  });
+
+  return tierResults.map((tr) => ({
+    tier: tr.tier,
+    label: tr.label,
+    description: tr.description,
+    colorWeight: tr.colorWeight,
+    silhouetteWeight: tr.silhouetteWeight,
+    partnerOutfit: tr.partnerOutfit,
+    matchReason: tr.matchReason,
+  }));
 }

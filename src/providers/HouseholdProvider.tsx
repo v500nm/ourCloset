@@ -1,7 +1,10 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { FamilyHierarchyRole, HouseholdRole } from '@/types';
+import { memberRepository } from '@/data/repositories/memberRepository';
+import { householdRepository } from '@/data/repositories/householdRepository';
 
 export interface FamilyMember {
   id: string;
@@ -26,8 +29,8 @@ interface HouseholdContextProps {
 
 const HouseholdContext = createContext<HouseholdContextProps | undefined>(undefined);
 
-// Initial requested mock data based on prompt
-const INITIAL_MEMBERS: FamilyMember[] = [
+// Initial default household members for first run
+export const DEFAULT_MEMBERS: FamilyMember[] = [
   {
     id: 'm-adnan',
     name: 'Adnan',
@@ -35,16 +38,6 @@ const INITIAL_MEMBERS: FamilyMember[] = [
     hierarchyRole: 'head_of_household',
     customRoleLabel: 'Husband',
     closetCount: 24,
-    privacyTier: 'PUBLIC',
-    joinedAt: '2026-01-15',
-  },
-  {
-    id: 'm-saniya',
-    name: 'Saniya',
-    role: 'wife',
-    hierarchyRole: 'spouse',
-    customRoleLabel: 'Wife',
-    closetCount: 38,
     privacyTier: 'PUBLIC',
     joinedAt: '2026-01-15',
   },
@@ -80,34 +73,105 @@ const INITIAL_MEMBERS: FamilyMember[] = [
   },
 ];
 
-export const HouseholdProvider: React.FC<{ children: ReactNode, initialMembers?: FamilyMember[] }> = ({ children, initialMembers }) => {
-  const [members, setMembers] = useState<FamilyMember[]>(initialMembers || INITIAL_MEMBERS);
-  const [primaryCoupleIds, setPrimaryCoupleIds] = useState<[string, string] | null>(
-    initialMembers ? (initialMembers.length >= 2 ? [initialMembers[0].id, initialMembers[1].id] : null) : ['m-adnan', 'm-saniya']
+export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?: FamilyMember[] }> = ({
+  children,
+  initialMembers,
+}) => {
+  // If running in isolated demo mode (initialMembers provided per ADR-007), stay purely in-memory
+  const isIsolatedDemo = !!initialMembers;
+  const [isolatedMembers, setIsolatedMembers] = useState<FamilyMember[]>(initialMembers || DEFAULT_MEMBERS);
+  const [isolatedCoupleIds, setIsolatedCoupleIds] = useState<[string, string] | null>(
+    initialMembers && initialMembers.length >= 2 ? [initialMembers[0].id, initialMembers[1].id] : ['m-adnan', 'm-']
   );
 
+  // Production live query from IndexedDB
+  const liveMembers = useLiveQuery(
+    () => (isIsolatedDemo ? Promise.resolve(isolatedMembers) : memberRepository.getAll()),
+    [isIsolatedDemo]
+  );
+
+  const [primaryCoupleIds, setPrimaryCoupleIdsState] = useState<[string, string] | null>(
+    isIsolatedDemo ? isolatedCoupleIds : null
+  );
+
+  useEffect(() => {
+    if (isIsolatedDemo) return;
+
+    const initHousehold = async () => {
+      const count = await memberRepository.count();
+      if (count === 0) {
+        await memberRepository.bulkAdd(DEFAULT_MEMBERS);
+        await householdRepository.setPrimaryCoupleIds(['m-adnan', 'm-']);
+        setPrimaryCoupleIdsState(['m-adnan', 'm-']);
+      } else {
+        const couple = await householdRepository.getPrimaryCoupleIds();
+        setPrimaryCoupleIdsState(couple || ['m-adnan', 'm-']);
+      }
+    };
+
+    initHousehold();
+  }, [isIsolatedDemo]);
+
   const addMember = (member: FamilyMember) => {
-    setMembers((prev) => [...prev, member]);
+    if (isIsolatedDemo) {
+      setIsolatedMembers(prev => [...prev, member]);
+    } else {
+      memberRepository.add(member);
+    }
   };
 
   const togglePrivacy = (id: string) => {
-    setMembers((prev) =>
-      prev.map((m) =>
-        m.id === id ? { ...m, privacyTier: m.privacyTier === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC' } : m
-      )
-    );
+    if (isIsolatedDemo) {
+      setIsolatedMembers(prev =>
+        prev.map(m => (m.id === id ? { ...m, privacyTier: m.privacyTier === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC' } : m))
+      );
+    } else {
+      memberRepository.togglePrivacy(id);
+    }
   };
 
   const removeMember = (id: string) => {
-    setMembers((prev) => prev.filter((m) => m.id !== id));
+    if (isIsolatedDemo) {
+      setIsolatedMembers(prev => prev.filter(m => m.id !== id));
+    } else {
+      memberRepository.remove(id);
+    }
   };
 
   const setPrimaryCouple = (id1: string, id2: string) => {
-    setPrimaryCoupleIds([id1, id2]);
+    const couple: [string, string] = [id1, id2];
+    if (isIsolatedDemo) {
+      setIsolatedCoupleIds(couple);
+    } else {
+      setPrimaryCoupleIdsState(couple);
+      householdRepository.setPrimaryCoupleIds(couple);
+    }
+  };
+
+  const members = isIsolatedDemo ? isolatedMembers : liveMembers || DEFAULT_MEMBERS;
+
+  // setMembers compat wrapper
+  const setMembers: React.Dispatch<React.SetStateAction<FamilyMember[]>> = value => {
+    if (isIsolatedDemo) {
+      setIsolatedMembers(value);
+    } else {
+      const newMembers = typeof value === 'function' ? value(members) : value;
+      memberRepository.bulkAdd(newMembers);
+    }
   };
 
   return (
-    <HouseholdContext.Provider value={{ members, setMembers, addMember, togglePrivacy, removeMember, primaryCoupleIds, setPrimaryCouple }}>
+    <HouseholdContext.Provider
+      value={{
+        members,
+        setMembers,
+        addMember,
+        togglePrivacy,
+        removeMember,
+        primaryCoupleIds: isIsolatedDemo ? isolatedCoupleIds : primaryCoupleIds,
+        setPrimaryCouple,
+      }}
+    >
       {children}
     </HouseholdContext.Provider>
   );

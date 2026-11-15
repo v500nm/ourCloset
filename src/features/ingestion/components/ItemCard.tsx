@@ -4,6 +4,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { WardrobeItem } from '@/types';
 import { Badge, Card, TwinSwatch } from '@/components';
+import { GarmentThumb } from '@/components/ui/garmentThumb';
 
 interface ItemCardProps {
   item: WardrobeItem;
@@ -25,11 +26,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, onStatusClick, onDelet
       {/* Compact Card Layout */}
       <Card className="group relative transition-transform hover:-translate-y-1 p-0 overflow-hidden flex flex-col justify-between max-w-full">
         <div className="relative aspect-[3/4] w-full bg-surface-container overflow-hidden">
-          <img
-            src={item.image_url}
-            alt={item.title}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-          />
+          <GarmentThumb item={item} className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out" />
           
           {/* Delete Action Badge */}
           {onDeleteClick && (

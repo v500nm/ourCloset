@@ -7,6 +7,7 @@ import { CardSkeleton } from '@/components/ui/skeleton';
 import { ActiveMode } from '@/types';
 import { useHousehold } from '@/providers/HouseholdProvider';
 import { useWardrobe } from '@/providers/WardrobeProvider';
+import { GarmentThumb } from '@/components/ui/garmentThumb';
 
 interface TwinningMatchResultsProps {
   eventContext?: string;
@@ -143,11 +144,7 @@ export const TwinningMatchResults: React.FC<TwinningMatchResultsProps> = ({
                     className="p-4 bg-surface-container rounded border border-secondary/30 flex items-center gap-4"
                   >
                     <div className="w-20 h-24 bg-surface-container-high rounded overflow-hidden flex-shrink-0">
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
+                      <GarmentThumb item={item} className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <div className="spec-label text-primary/60 text-[10px]">{item.id}</div>

@@ -21,7 +21,11 @@ export interface HouseholdBond {
   id: string;
   household_type: 'couple' | 'family';
   sync_status: 'ACTIVE' | 'PAUSED';
+  invite_code?: string;
+  invite_expires_at?: string;
   created_at: string;
+  updated_at?: string;
+  deleted_at?: string;
 }
 
 export interface HouseholdMember {
@@ -54,6 +58,8 @@ export interface WardrobeItem {
   laundry_status: LaundryStatus;
   privacy_tier: PrivacyTier;
   created_at: string;
+  updated_at?: string;
+  deleted_at?: string;
 }
 
 export interface OOTDSession {

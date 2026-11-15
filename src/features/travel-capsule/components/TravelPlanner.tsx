@@ -220,6 +220,50 @@ export const TravelPlanner: React.FC = () => {
             </div>
           )}
 
+          {activeTab === 'combinations' && (
+            <div className="space-y-4">
+              {result?.validCombinations && result.validCombinations.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {result.validCombinations.map((combo) => (
+                    <Card key={combo.id} className="p-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="spec-label text-secondary font-mono text-xs uppercase font-bold">
+                          {combo.id}
+                        </span>
+                        <span className="spec-label text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded text-[10px] font-mono">
+                          {Math.round(combo.score * 100)}% Match
+                        </span>
+                      </div>
+                      <div className="flex gap-2 items-center overflow-x-auto py-1">
+                        {combo.items.map((item) => (
+                          <div
+                            key={item.id}
+                            className="w-16 h-18 bg-surface-container rounded p-1 flex-shrink-0 text-center"
+                            title={item.title}
+                          >
+                            <span className="spec-label text-[9px] block text-primary/70 truncate">
+                              {item.title}
+                            </span>
+                            <span className="spec-label text-[9px] text-secondary font-mono block">
+                              {item.category}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-on-surface-variant font-body">{combo.reason}</p>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center bg-surface-container-lowest torn-swatch border border-outline-variant/30">
+                  <p className="spec-label text-primary/60">
+                    {result ? 'No combinations generated.' : 'Tap "GENERATE" to compile combinations.'}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           {activeTab === 'checklist' && result && (
             <Card className="p-6 space-y-3">
               <h4 className="spec-label text-primary font-bold mb-2">Packing Checklist</h4>
