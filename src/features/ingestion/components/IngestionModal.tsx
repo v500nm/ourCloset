@@ -6,6 +6,7 @@ import { Button, Card } from '@/components';
 import { ingestionWorkerClient, type IngestionPipelineOutput } from '../services/ingestionWorkerClient';
 import { saveWardrobeItem } from '../services/ingestionService';
 import { IngestionItem } from '../types/ingestion.types';
+import { trackPrivacyEvent } from '@/services/telemetry';
 
 interface IngestionModalProps {
   isOpen: boolean;
@@ -19,31 +20,27 @@ interface IngestionModalProps {
  * Suggestions are only suggestions: every `edited*` field overrides what the model proposed.
  */
 export interface IngestionQueueItem {
-  id: string;
+  id?: string;
   file: File;
-  fileName: string;
-  status: 'queued' | 'processing' | 'done' | 'error';
+  fileName?: string;
+  status?: 'queued' | 'processing' | 'done' | 'error';
   output?: IngestionPipelineOutput;
-  error?: string;
-  editedTitle: string;
-  editedCategory: ItemCategory;
-  editedCulturalStyle: CulturalStyle;
-  editedFormalityLevel: FormalityLevel;
-  editedPrimaryColor: string;
-  editedSecondaryColor?: string | null;
-  editedHardwareMetal?: HardwareMetalColor | null;
-  editedLeatherTone?: LeatherTone | null;
-  editedSeasonTags: SeasonTag[];
-  editedPrivacyTier: PrivacyTier;
-}
-
-interface QueuedItem {
-  file: File;
   processedItem?: IngestionItem;
   previewUrl?: string;
   byteSize?: number;
   confidence?: number;
   explanation?: string;
+  error?: string;
+  editedTitle?: string;
+  editedCategory?: ItemCategory;
+  editedCulturalStyle?: CulturalStyle;
+  editedFormalityLevel?: FormalityLevel;
+  editedPrimaryColor?: string;
+  editedSecondaryColor?: string | null;
+  editedHardwareMetal?: HardwareMetalColor | null;
+  editedLeatherTone?: LeatherTone | null;
+  editedSeasonTags?: SeasonTag[];
+  editedPrivacyTier?: PrivacyTier;
 }
 
 export const IngestionModal: React.FC<IngestionModalProps> = ({
@@ -58,7 +55,7 @@ export const IngestionModal: React.FC<IngestionModalProps> = ({
   const [activeStage, setActiveStage] = useState<string>('DECODE');
 
   // Queue for bulk ingestion
-  const [queue, setQueue] = useState<QueuedItem[]>([]);
+  const [queue, setQueue] = useState<IngestionQueueItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   // Review state
@@ -82,14 +79,14 @@ export const IngestionModal: React.FC<IngestionModalProps> = ({
     if (!files || files.length === 0) return;
 
     const fileList = Array.from(files);
-    const initialQueue: QueuedItem[] = fileList.map((f) => ({ file: f }));
+    const initialQueue: IngestionQueueItem[] = fileList.map((f) => ({ file: f }));
     setQueue(initialQueue);
     setCurrentIndex(0);
 
     await processQueueItem(0, initialQueue);
   };
 
-  const processQueueItem = async (index: number, currentQueue: QueuedItem[]) => {
+  const processQueueItem = async (index: number, currentQueue: IngestionQueueItem[]) => {
     if (index >= currentQueue.length) {
       onClose();
       return;
@@ -214,6 +211,15 @@ export const IngestionModal: React.FC<IngestionModalProps> = ({
     };
 
     onSave(fullWardrobeItem);
+    try {
+      trackPrivacyEvent('item_ingested', {
+        category,
+        formality: formalityLevel,
+        success: true,
+      });
+    } catch {
+      // Telemetry failure should never block UI
+    }
 
     // If more items in queue, proceed to next
     const nextIdx = currentIndex + 1;

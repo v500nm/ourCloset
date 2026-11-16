@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTwinning } from '../hooks/useTwinning';
 import { Button, Card, TwinSwatch } from '@/components';
 import { CardSkeleton } from '@/components/ui/skeleton';
@@ -8,6 +8,8 @@ import { ActiveMode } from '@/types';
 import { useHousehold } from '@/providers/HouseholdProvider';
 import { useWardrobe } from '@/providers/WardrobeProvider';
 import { GarmentThumb } from '@/components/ui/garmentThumb';
+import { logBetaFeedback } from '@/services/localLearningEngine';
+import { trackPrivacyEvent } from '@/services/telemetry';
 
 interface TwinningMatchResultsProps {
   eventContext?: string;
@@ -19,7 +21,10 @@ export const TwinningMatchResults: React.FC<TwinningMatchResultsProps> = ({
   activeMode,
 }) => {
   const { members } = useHousehold();
-  const { markItemsDirty } = useWardrobe();
+  const { markItemsDirty, loadSampleWardrobe } = useWardrobe();
+  const initiatorMemberId = activeMode.memberIds[0];
+  const partnerMemberId = activeMode.memberIds.length > 1 ? activeMode.memberIds[1] : undefined;
+
   const {
     tiers,
     selectedTier,
@@ -29,13 +34,53 @@ export const TwinningMatchResults: React.FC<TwinningMatchResultsProps> = ({
     loading,
     handleAccept,
     handleReroll,
-  } = useTwinning(eventContext);
+  } = useTwinning(eventContext, { initiatorMemberId, partnerMemberId });
+
+  const [woreOutfit, setWoreOutfit] = useState<boolean | null>(null);
+  const [culturalTag, setCulturalTag] = useState<string>('');
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
+  const [isSeeding, setIsSeeding] = useState<boolean>(false);
+
+  const handleQuickStartInTwinning = async () => {
+    setIsSeeding(true);
+    try {
+      await loadSampleWardrobe();
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to seed wardrobe:', err);
+      setIsSeeding(false);
+    }
+  };
 
   if (loading) {
     return (
       <div className="space-y-4 animate-in fade-in duration-500">
         <div className="spec-label text-primary mb-2">Orchestrating Twinning Match Tiers...</div>
         <CardSkeleton />
+      </div>
+    );
+  }
+
+  if (tiers.length === 0) {
+    return (
+      <div
+        data-testid="twinning-empty-state"
+        className="p-8 text-center bg-surface-container-lowest torn-swatch border border-outline-variant/30 rounded-lg space-y-4"
+      >
+        <span className="material-symbols-outlined text-4xl text-primary/40 mb-2">style</span>
+        <h3 className="font-display text-body-md text-primary font-bold">No Match Tiers Available</h3>
+        <p className="text-xs text-on-surface-variant font-body max-w-sm mx-auto">
+          Please add garments to your wardrobe or quick-start with our curated capsule wardrobe to orchestrate twinning matches instantly.
+        </p>
+        <button
+          data-testid="twinning-quickstart-btn"
+          onClick={handleQuickStartInTwinning}
+          disabled={isSeeding}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary text-on-secondary rounded font-mono text-xs uppercase tracking-wider font-bold hover:bg-primary transition-all shadow"
+        >
+          <span className="material-symbols-outlined text-sm">bolt</span>
+          {isSeeding ? 'Seeding Wardrobe...' : 'Quick-Start Wardrobe'}
+        </button>
       </div>
     );
   }
@@ -55,6 +100,33 @@ export const TwinningMatchResults: React.FC<TwinningMatchResultsProps> = ({
       itemIds.push('SU-NVY-01'); // Add the initiator's item
       markItemsDirty(itemIds);
     }
+  };
+
+  const handleSubmitFeedback = async () => {
+    if (!activeTier) return;
+    const itemIds = activeTier.partnerOutfit.map((item) => item.id);
+    itemIds.push('SU-NVY-01');
+
+    const accuracy = culturalTag === 'authentic' ? 'authentic' : (culturalTag ? 'clash' : 'acceptable');
+
+    await logBetaFeedback({
+      woreOutfit: woreOutfit ?? true,
+      culturalAccuracy: accuracy,
+      feedbackCategory: culturalTag || 'general',
+      eventContext,
+      selectedTier,
+      lockedItemIds: itemIds,
+    });
+
+    trackPrivacyEvent('beta_feedback', {
+      wore_outfit: woreOutfit ?? true,
+      cultural_accuracy: accuracy,
+      feedback_category: culturalTag || 'general',
+      selected_tier: selectedTier,
+      item_count: itemIds.length,
+    });
+
+    setFeedbackSubmitted(true);
   };
 
   return (
@@ -176,6 +248,99 @@ export const TwinningMatchResults: React.FC<TwinningMatchResultsProps> = ({
               <div className="spec-label text-emerald-700 flex items-center gap-1 font-bold">
                 <span className="material-symbols-outlined text-lg">check_circle</span>
                 Outfit Locked & Synced via Supabase Realtime
+              </div>
+            )}
+          </div>
+
+          {/* Atelier-Styled Beta Feedback Mechanism */}
+          <div data-testid="beta-feedback-section" className="mt-8 pt-6 border-t border-dashed border-outline-variant/40">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-secondary text-lg">rate_review</span>
+                <span className="spec-label text-primary font-bold">Beta Household Feedback</span>
+              </div>
+              <span className="text-[11px] font-mono text-on-surface-variant/80 uppercase">Zero PII • Local Learning</span>
+            </div>
+
+            {feedbackSubmitted ? (
+              <div data-testid="beta-feedback-submitted" className="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-800 rounded-lg flex items-center gap-3 text-emerald-800 dark:text-emerald-200">
+                <span className="material-symbols-outlined text-xl">check_circle</span>
+                <div className="text-xs">
+                  <span className="font-bold">Thank you for your feedback!</span> Saved to your device&apos;s local learning engine to refine future cultural outfit pairings.
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4 bg-surface-container-lowest/60 p-4 rounded-xl border border-outline-variant/30">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <span className="text-xs font-medium text-primary">Did you wear this suggested outfit?</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      data-testid="wear-yes-btn"
+                      onClick={() => setWoreOutfit(true)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all flex items-center gap-1.5 ${
+                        woreOutfit === true
+                          ? 'bg-primary text-on-primary shadow-sm'
+                          : 'bg-surface-container border border-outline-variant/40 text-primary hover:bg-surface-container-high'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-sm">check</span>
+                      Yes, wore it
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="wear-no-btn"
+                      onClick={() => setWoreOutfit(false)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all flex items-center gap-1.5 ${
+                        woreOutfit === false
+                          ? 'bg-rose-700 text-white shadow-sm'
+                          : 'bg-surface-container border border-outline-variant/40 text-primary hover:bg-surface-container-high'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-sm">close</span>
+                      No, skipped
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-xs font-medium text-primary block">Cultural Feedback & Fluency:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { key: 'authentic', label: 'Culturally Authentic', icon: 'verified' },
+                      { key: 'formality_mismatch', label: 'Formality Mismatch', icon: 'balance' },
+                      { key: 'modesty_unmet', label: 'Modesty Unmet', icon: 'shield' },
+                      { key: 'color_clash', label: 'Color / Accent Clash', icon: 'palette' },
+                    ].map((pill) => (
+                      <button
+                        key={pill.key}
+                        type="button"
+                        data-testid={`cultural-feedback-${pill.key}`}
+                        onClick={() => setCulturalTag(pill.key)}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-all flex items-center gap-1 ${
+                          culturalTag === pill.key
+                            ? 'bg-secondary text-on-secondary font-bold'
+                            : 'bg-surface border border-outline-variant/30 text-on-surface-variant hover:border-secondary/50'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-xs">{pill.icon}</span>
+                        {pill.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    data-testid="submit-beta-feedback-btn"
+                    disabled={woreOutfit === null && !culturalTag}
+                    onClick={handleSubmitFeedback}
+                    className="px-4 py-1.5 bg-primary text-on-primary rounded font-mono text-xs uppercase tracking-wider font-semibold hover:bg-primary/90 transition-all disabled:opacity-40"
+                  >
+                    Submit Beta Feedback
+                  </button>
+                </div>
               </div>
             )}
           </div>

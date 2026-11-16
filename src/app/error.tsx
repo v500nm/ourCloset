@@ -16,7 +16,7 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-raw-silk flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div data-testid="root-error-boundary" className="min-h-screen bg-raw-silk flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Ambient background blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sindoor/5 rounded-full blur-[100px] pointer-events-none" />
 

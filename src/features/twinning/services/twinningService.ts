@@ -1,8 +1,14 @@
 import { TwinningTierOption } from '../types/twinning.types';
 import { WardrobeItem, FormalityLevel, CulturalStyle } from '@/types';
 import { wardrobeRepository } from '@/data/repositories/wardrobeRepository';
+import { householdRepository } from '@/data/repositories/householdRepository';
 import { generateTwinningTiersEngine } from '@/engine';
 import { getSampleWardrobe } from '@/data/seed/sampleWardrobe';
+
+export interface TwinningGenerationOptions {
+  initiatorMemberId?: string;
+  partnerMemberId?: string;
+}
 
 /**
  * Connects the pure outfit engine to the front-end twinning service.
@@ -11,7 +17,8 @@ import { getSampleWardrobe } from '@/data/seed/sampleWardrobe';
 export async function generateTwinningTiers(
   eventContext: string,
   initiatorItems?: WardrobeItem[],
-  partnerWardrobe?: WardrobeItem[]
+  partnerWardrobe?: WardrobeItem[],
+  options?: TwinningGenerationOptions
 ): Promise<TwinningTierOption[]> {
   const now = new Date();
 
@@ -24,16 +31,40 @@ export async function generateTwinningTiers(
     }
   }
 
-  // Identify initiator items (e.g. husband / initiator) and partner items (e.g. wife)
-  const resolvedInitiator =
-    initiatorItems && initiatorItems.length > 0
-      ? initiatorItems
-      : allItems.filter((i) => i.user_id === 'm-adnan' || i.user_id.includes('husband'));
+  // Check stored twinning pair or primary couple configuration if IDs not explicitly passed
+  let targetInitiatorId = options?.initiatorMemberId;
+  let targetPartnerId = options?.partnerMemberId;
 
-  const resolvedPartner =
-    partnerWardrobe && partnerWardrobe.length > 0
-      ? partnerWardrobe
-      : allItems.filter((i) => i.user_id !== 'm-adnan' && !i.user_id.includes('husband'));
+  if (!targetInitiatorId || !targetPartnerId) {
+    const configuredPair =
+      (await householdRepository.getTwinningPairIds()) ||
+      (await householdRepository.getPrimaryCoupleIds());
+    if (configuredPair && configuredPair[0] && configuredPair[1]) {
+      if (!targetInitiatorId) targetInitiatorId = configuredPair[0];
+      if (!targetPartnerId) targetPartnerId = configuredPair[1];
+    }
+  }
+
+  // Identify initiator items and partner items
+  let resolvedInitiator: WardrobeItem[] = [];
+  if (initiatorItems && initiatorItems.length > 0) {
+    resolvedInitiator = initiatorItems;
+  } else if (targetInitiatorId) {
+    resolvedInitiator = allItems.filter((i) => i.user_id === targetInitiatorId);
+  }
+  if (resolvedInitiator.length === 0) {
+    resolvedInitiator = allItems.filter((i) => i.user_id === 'm-adnan' || i.user_id.includes('husband'));
+  }
+
+  let resolvedPartner: WardrobeItem[] = [];
+  if (partnerWardrobe && partnerWardrobe.length > 0) {
+    resolvedPartner = partnerWardrobe;
+  } else if (targetPartnerId) {
+    resolvedPartner = allItems.filter((i) => i.user_id === targetPartnerId);
+  }
+  if (resolvedPartner.length === 0) {
+    resolvedPartner = allItems.filter((i) => i.user_id !== 'm-adnan' && !i.user_id.includes('husband'));
+  }
 
   // Fallbacks if one side is empty
   const finalInitiator = resolvedInitiator.length > 0 ? resolvedInitiator : allItems.slice(0, 3);

@@ -23,6 +23,7 @@ const ALLOWED_HOSTS = new Set([
   'cdn-lfs.huggingface.co',
   'cdn.jsdelivr.net',
   'xenova.github.io',
+  'images.unsplash.com',
 ]);
 
 function isHostAllowed(urlString: string, appHost: string): boolean {
@@ -54,7 +55,7 @@ function isHostAllowed(urlString: string, appHost: string): boolean {
 }
 
 test.describe('Tenet 1: Device-First Network Privacy Enforcement', () => {
-  test('strictly limits outbound network traffic across primary user flows', async ({ page, baseURL }) => {
+  test('strictly limits outbound network traffic across primary user flows and ingestion', async ({ page, baseURL }) => {
     const appUrl = new URL(baseURL || 'http://localhost:3000');
     const appHost = appUrl.hostname.toLowerCase();
 
@@ -80,20 +81,53 @@ test.describe('Tenet 1: Device-First Network Privacy Enforcement', () => {
     await page.goto('/today');
     await page.waitForLoadState('networkidle');
 
-    // Attempt outfit generation interactions if interactive elements exist
+    // Trigger outfit generation interactions
     const generateBtn = page.getByRole('button', { name: /generate|refresh|re-generate|shuffle/i }).first();
-    if (await generateBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+    if (await generateBtn.isVisible({ timeout: 1500 }).catch(() => false)) {
       await generateBtn.click();
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(600);
     }
 
-    // 3. Visit Wardrobe / Closet (/closet)
+    // 3. Visit Wardrobe / Closet (/closet) & Trigger Ingestion
     await page.goto('/closet');
     await page.waitForLoadState('networkidle');
+
+    // Open ingestion modal via floating add button
+    const addGarmentBtn = page.getByRole('button', { name: /add new garment to cupboard/i });
+    if (await addGarmentBtn.isVisible({ timeout: 1500 }).catch(() => false)) {
+      await addGarmentBtn.click();
+      const modal = page.locator('[role="dialog"]');
+      await expect(modal).toBeVisible({ timeout: 2000 });
+
+      // Upload a 1x1 base64 transparent PNG fixture into file input
+      const fileInput = page.locator('input[type="file"]').first();
+      if (await fileInput.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await fileInput.setInputFiles({
+          name: 'test_garment.png',
+          mimeType: 'image/png',
+          buffer: Buffer.from(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+            'base64'
+          ),
+        });
+        await page.waitForTimeout(1000);
+      }
+
+      // Close modal
+      const closeBtn = page.getByRole('button', { name: /close|dismiss/i }).first();
+      if (await closeBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await closeBtn.click();
+      }
+    }
 
     // 4. Visit Demo flow (/demo)
     await page.goto('/demo');
     await page.waitForLoadState('networkidle');
+
+    // Verify key interactive element IDs exist
+    await expect(page.locator('#demo-generate-btn')).toBeVisible({ timeout: 2000 });
+    await page.locator('#demo-generate-btn').click();
+    await page.waitForTimeout(800);
 
     // Verify zero unauthorized third-party outgoing requests occurred
     if (unexpectedRequests.length > 0) {
@@ -110,4 +144,3 @@ test.describe('Tenet 1: Device-First Network Privacy Enforcement', () => {
     ).toHaveLength(0);
   });
 });
-

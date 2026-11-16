@@ -14,7 +14,7 @@ interface ModeSelectorProps {
 
 export const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeChange }) => {
   const shouldReduceMotion = useReducedMotion();
-  const { members, primaryCoupleIds } = useHousehold();
+  const { members, primaryCoupleIds, twinningPair } = useHousehold();
   const { user } = useAuth();
   const [isCustomMode, setIsCustomMode] = useState(false);
   const [customSelection, setCustomSelection] = useState<string[]>([]);
@@ -39,6 +39,19 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeC
     wife = members.find((m) => m.role === 'wife' || m.hierarchyRole === 'spouse');
   }
   const hasCouple = husband && wife;
+
+  // Find explicit twinning pair if configured
+  let twin1, twin2;
+  if (twinningPair) {
+    twin1 = members.find((m) => m.id === twinningPair[0]);
+    twin2 = members.find((m) => m.id === twinningPair[1]);
+  }
+  const hasDistinctTwinning =
+    twin1 &&
+    twin2 &&
+    (!hasCouple ||
+      twinningPair?.[0] !== primaryCoupleIds?.[0] ||
+      twinningPair?.[1] !== primaryCoupleIds?.[1]);
 
   const toggleCustomMember = (id: string) => {
     setCustomSelection((prev) =>
@@ -150,6 +163,47 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeC
               </span>
               <div className={`absolute top-2 right-2 w-3 h-3 rounded-full flex items-center justify-center ${currentMode.type === 'couple' ? 'bg-secondary' : 'border border-outline-variant'}`}>
                 {currentMode.type === 'couple' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+            </motion.button>
+          )}
+
+          {/* Configured Twinning Pair (when distinct from Primary Couple) */}
+          {hasDistinctTwinning && twin1 && twin2 && (
+            <motion.button
+              whileHover={hoverMotion}
+              whileTap={tapMotion}
+              onClick={() => {
+                setUpgradePrompt(null);
+                onModeChange({ type: 'couple', memberIds: [twin1.id, twin2.id] });
+              }}
+              className={`flex-shrink-0 group relative bg-surface-container-lowest border torn-swatch hard-shadow p-4 min-w-[180px] flex flex-col items-center text-center transition-all focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 ${
+                currentMode.type === 'couple' && currentMode.memberIds.includes(twin1.id) && currentMode.memberIds.includes(twin2.id)
+                  ? 'border-secondary ring-1 ring-secondary'
+                  : 'border-outline-variant/30'
+              }`}
+            >
+              <div className="relative w-20 h-12 mb-3 flex justify-center items-center">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center absolute left-0 z-10 border-2 border-surface-container-lowest font-display text-amber-900 font-bold">
+                  {twin1.name?.charAt(0)}
+                </div>
+                <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center absolute right-0 z-0 border-2 border-surface-container-lowest font-display text-on-secondary-container font-bold">
+                  {twin2.name?.charAt(0)}
+                </div>
+              </div>
+              <h3 className="font-display text-title-md text-primary mb-1">Twinning Pair</h3>
+              <span className="spec-label text-[10px] text-amber-900 bg-amber-100 px-2 py-0.5 rounded brass-text line-clamp-1">
+                {twin1.name} & {twin2.name}
+              </span>
+              <div
+                className={`absolute top-2 right-2 w-3 h-3 rounded-full flex items-center justify-center ${
+                  currentMode.type === 'couple' && currentMode.memberIds.includes(twin1.id) && currentMode.memberIds.includes(twin2.id)
+                    ? 'bg-secondary'
+                    : 'border border-outline-variant'
+                }`}
+              >
+                {currentMode.type === 'couple' && currentMode.memberIds.includes(twin1.id) && currentMode.memberIds.includes(twin2.id) && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                )}
               </div>
             </motion.button>
           )}

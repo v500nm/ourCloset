@@ -6,7 +6,7 @@ import { ModeSelector, ContextPresets, FreeformInput, useContextResolver } from 
 import { TwinningMatchResults } from '@/features/twinning';
 import { StitchingAccent, Button } from '@/components';
 import { MotionText, MotionContainer } from '@/components/ui/motionText';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Header } from '@/components/layout/header';
 import { HouseholdProvider, useHousehold, FamilyMember } from '@/providers/HouseholdProvider';
 
@@ -55,6 +55,7 @@ type DemoActions = {
 };
 
 function DemoContent() {
+  const shouldReduceMotion = useReducedMotion();
   const {
     mode,
     setMode,
@@ -186,6 +187,18 @@ function DemoContent() {
   };
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      setCursorVisible(false);
+      const hId = primaryCoupleIds?.[0] || members[0]?.id;
+      const wId = primaryCoupleIds?.[1] || members[1]?.id;
+      if (hId && wId) setMode({ type: 'couple', memberIds: [hId, wId] });
+      resolvePreset('Event', 'Wedding');
+      setTypingText('Formal traditional wear for a family wedding.');
+      resolveFreeform('Formal traditional wear for a family wedding.');
+      setShowResults(true);
+      return;
+    }
+
     let isCancelled = false;
     const guard = async <T,>(p: Promise<T>) => (isCancelled ? undefined : p);
 
@@ -323,9 +336,9 @@ function DemoContent() {
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-surface/10 cursor-none" />
+      {!shouldReduceMotion && <div className="fixed inset-0 z-40 bg-surface/10 cursor-none" />}
 
-      {cursorVisible && (
+      {!shouldReduceMotion && cursorVisible && (
         <motion.div
           className="fixed z-50 pointer-events-none drop-shadow-2xl"
           animate={{
@@ -356,22 +369,43 @@ function DemoContent() {
       )}
 
       <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-secondary text-on-secondary px-6 py-2 rounded-full font-bold shadow-2xl flex items-center gap-3">
-        <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
-        Interactive Demo Playing...
+        {shouldReduceMotion ? (
+          <>
+            <span className="material-symbols-outlined text-[16px]">accessibility_new</span>
+            <span>Static Demo Mode (Reduced Motion)</span>
+            <button
+              onClick={() => setDemoStep(4)}
+              className="ml-2 text-xs font-mono underline hover:text-white"
+            >
+              Finish Tour
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
+            <span>Interactive Demo Playing...</span>
+          </>
+        )}
       </div>
 
-      {/* Virtual scroll viewport: overflow hidden, fixed height — nothing
-          native for the user to scroll. `content` below is what actually
-          moves, via transform, driven only by our own state. */}
-      <div ref={viewportRef} className="relative overflow-hidden" style={{ height: 'calc(100vh - 7rem)' }}>
+      {/* Virtual scroll viewport: on reduced motion, native overflow-y-auto is active without locked transforms */}
+      <div
+        ref={viewportRef}
+        className={shouldReduceMotion ? 'relative overflow-y-auto' : 'relative overflow-hidden'}
+        style={shouldReduceMotion ? { minHeight: 'calc(100vh - 7rem)' } : { height: 'calc(100vh - 7rem)' }}
+      >
         <div
           ref={contentRef}
           className="space-y-10 max-w-container mx-auto"
-          style={{
-            transform: `translateY(${-virtualScrollY}px)`,
-            transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
-            willChange: 'transform',
-          }}
+          style={
+            shouldReduceMotion
+              ? {}
+              : {
+                  transform: `translateY(${-virtualScrollY}px)`,
+                  transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+                  willChange: 'transform',
+                }
+          }
         >
           <MotionContainer staggerChildren={0.1} className="text-center md:text-left">
             <MotionText as="span" className="spec-label text-primary/60 uppercase tracking-widest mb-2 block">
@@ -385,18 +419,30 @@ function DemoContent() {
             </MotionText>
           </MotionContainer>
 
-          <ModeSelector currentMode={mode} onModeChange={() => {}} />
+          <ModeSelector
+            currentMode={mode}
+            onModeChange={(m) => {
+              setMode(m);
+            }}
+          />
 
           <div className="stitching-border-full" />
 
           <ContextPresets
             selectedPreset={selectedPreset}
             selectedSubPreset={selectedSubPreset}
-            onPresetChange={() => {}}
+            onPresetChange={(p, sub) => {
+              resolvePreset(p, sub);
+            }}
           />
 
           <FreeformInput
-            onGenerate={() => {}}
+            onGenerate={(text) => {
+              if (text) {
+                resolveFreeform(text);
+                setShowResults(true);
+              }
+            }}
             resolvedContext={resolvedContext}
             loading={loading || demoStep === 3}
             overrideText={typingText || undefined}

@@ -120,7 +120,8 @@ export async function seedSampleWardrobe(clearExisting = false): Promise<{ count
         joinedAt: '2026-01-15',
       }
     ]);
-    await householdRepository.setPrimaryCoupleIds(['m-adnan','']);
+    // Only set couple IDs if at least 2 members exist
+    await householdRepository.clearPrimaryCoupleIds();
   }
 
   return { count: sampleItems.length };

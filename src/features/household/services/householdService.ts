@@ -16,6 +16,49 @@ export interface InviteCodeResult {
   householdId: string;
 }
 
+// Rate-limiting configuration (F-10 / LIM-007)
+export const MAX_INVITE_ATTEMPTS = 5;
+export const LOCKOUT_WINDOW_MS = 15 * 60 * 1000;
+
+interface RateLimitRecord {
+  attempts: number;
+  lockedUntil?: number;
+  lastAttempt: number;
+}
+
+const rateLimitStore: Record<string, RateLimitRecord> = {};
+
+export function checkInviteRateLimit(clientId = 'local-device'): void {
+  const now = Date.now();
+  const record = rateLimitStore[clientId];
+
+  if (record?.lockedUntil && now < record.lockedUntil) {
+    const minutesLeft = Math.ceil((record.lockedUntil - now) / 60000);
+    throw new Error(`Too many failed invite code attempts. Locked out for ${minutesLeft} minute(s).`);
+  }
+
+  // If previous attempts expired outside window, reset
+  if (record && now - record.lastAttempt > LOCKOUT_WINDOW_MS) {
+    delete rateLimitStore[clientId];
+  }
+}
+
+export function recordInviteFailure(clientId = 'local-device'): void {
+  const now = Date.now();
+  const record = rateLimitStore[clientId] || { attempts: 0, lastAttempt: now };
+  record.attempts += 1;
+  record.lastAttempt = now;
+
+  if (record.attempts >= MAX_INVITE_ATTEMPTS) {
+    record.lockedUntil = now + LOCKOUT_WINDOW_MS;
+  }
+  rateLimitStore[clientId] = record;
+}
+
+export function resetInviteRateLimit(clientId = 'local-device'): void {
+  delete rateLimitStore[clientId];
+}
+
 /**
  * Generates an uppercase 6-character alphanumeric invite code with 24-hour expiration.
  */
@@ -109,8 +152,11 @@ export async function joinHouseholdByInvite(
   inviteCode: string,
   joiningUserId = 'partner-user',
   joiningUserName = 'Partner',
-  role: HouseholdRole = 'partner'
+  role: HouseholdRole = 'partner',
+  clientId = 'local-device'
 ): Promise<{ success: boolean; household: HouseholdBond }> {
+  checkInviteRateLimit(clientId);
+
   const cleanCode = inviteCode.trim().toUpperCase();
 
   // 1. Locate household with matching invite code
@@ -125,6 +171,7 @@ export async function joinHouseholdByInvite(
   }
 
   if (!household) {
+    recordInviteFailure(clientId);
     throw new Error('Invalid invite code. Household not found.');
   }
 
@@ -132,9 +179,12 @@ export async function joinHouseholdByInvite(
   if (household.invite_expires_at) {
     const expires = new Date(household.invite_expires_at).getTime();
     if (Date.now() > expires) {
+      recordInviteFailure(clientId);
       throw new Error('This invite code has expired. Please ask your partner to generate a new code.');
     }
   }
+
+  resetInviteRateLimit(clientId);
 
   // 3. Mark code as redeemed (single-use)
   const updatedHousehold: HouseholdBond = {

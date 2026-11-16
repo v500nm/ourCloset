@@ -1,14 +1,27 @@
 import {
   CulturalStyle,
   FabricType,
+  FamilyHierarchyRole,
   FormalityLevel,
   HardwareMetalColor,
+  HouseholdRole,
   ItemCategory,
   LaundryStatus,
   LeatherTone,
   PrivacyTier,
   SeasonTag,
 } from './taxonomy.types';
+
+export interface FamilyMember {
+  id: string;
+  name: string;
+  role: HouseholdRole;
+  hierarchyRole: FamilyHierarchyRole;
+  customRoleLabel?: string;
+  closetCount: number;
+  privacyTier: 'PUBLIC' | 'PRIVATE';
+  joinedAt: string;
+}
 
 export interface Profile {
   id: string;

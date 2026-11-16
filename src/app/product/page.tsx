@@ -37,7 +37,7 @@ export default function ProductPage() {
                 <h3 className="font-display text-2xl font-bold text-primary">Zero-Key AI Inference</h3>
               </div>
               <p className="text-on-surface-variant mb-4">
-                We've built a custom heuristic matching engine that works locally. That means no OpenAI keys, no monthly token limits, and instant outfit generation even when offline.
+                We&apos;ve built a custom heuristic matching engine that works locally. That means no OpenAI keys, no monthly token limits, and instant outfit generation even when offline.
               </p>
               <ul className="space-y-2 mt-6 font-mono text-sm">
                 <li className="flex items-center gap-2"><span className="material-symbols-outlined text-emerald-600 text-lg">check</span> Local Execution</li>
@@ -57,7 +57,7 @@ export default function ProductPage() {
                 <h3 className="font-display text-2xl font-bold text-primary">Multicultural Taxonomies</h3>
               </div>
               <p className="text-on-surface-variant mb-4">
-                ourCloset understands that your wardrobe isn't just jeans and t-shirts. Our engine natively supports Indian Traditional, Islamic-Modest, and Western dress codes.
+                ourCloset understands that your wardrobe isn&apos;t just jeans and t-shirts. Our engine natively supports Indian Traditional, Islamic-Modest, and Western dress codes.
               </p>
               <div className="flex flex-wrap gap-2 mt-6">
                 <span className="px-3 py-1 bg-surface-container-high rounded-full text-xs font-bold border border-outline-variant/50">Sarees & Kurtas</span>

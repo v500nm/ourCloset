@@ -66,7 +66,7 @@ export default function TestimonialsPage() {
                   ))}
                 </div>
                 <p className="font-body text-lg text-on-surface mb-6 leading-relaxed">
-                  "{t.content}"
+                  &ldquo;{t.content}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold font-display">

@@ -260,3 +260,89 @@ export async function getLearnedStats(): Promise<LearnedStats> {
     activeRoles: Array.from(rolesSet),
   };
 }
+
+// ==========================================
+// Phase 7 Beta Household Feedback Mechanism
+// ==========================================
+
+export interface BetaHouseholdFeedback {
+  id: string;
+  timestamp: string;
+  woreOutfit: boolean;
+  culturalAccuracy: 'authentic' | 'acceptable' | 'clash' | string;
+  feedbackCategory?: 'formality_mismatch' | 'modesty_unmet' | 'color_clash' | 'culturally_authentic' | 'other' | string;
+  eventContext: string;
+  selectedTier: string;
+  lockedItemIds: string[];
+}
+
+const BETA_FEEDBACK_STORAGE_KEY = 'ourcloset_beta_feedback_v1';
+
+/**
+ * Retrieves the persisted beta feedback history from IndexedDB.
+ */
+export async function getBetaFeedbackHistory(): Promise<BetaHouseholdFeedback[]> {
+  try {
+    const feedback = await get<BetaHouseholdFeedback[]>(BETA_FEEDBACK_STORAGE_KEY);
+    return feedback || [];
+  } catch (err) {
+    console.warn('Beta feedback storage fetch error:', err);
+    return [];
+  }
+}
+
+/**
+ * Clears beta feedback history (used in tests or manual reset).
+ */
+export async function clearBetaFeedbackHistory(): Promise<void> {
+  try {
+    await del(BETA_FEEDBACK_STORAGE_KEY);
+  } catch (err) {
+    console.warn('Beta feedback clear error:', err);
+  }
+}
+
+/**
+ * Logs structured beta feedback ("Did you wear this?" / "Cultural feedback?")
+ * into local IndexedDB and feeds the local learning engine without PII or photo leakage.
+ */
+export async function logBetaFeedback(
+  feedback: Omit<BetaHouseholdFeedback, 'id' | 'timestamp'> & { timestamp?: string }
+): Promise<BetaHouseholdFeedback> {
+  const newRecord: BetaHouseholdFeedback = {
+    ...feedback,
+    id: `beta-fb-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    timestamp: feedback.timestamp || new Date().toISOString(),
+  };
+
+  try {
+    const history = await getBetaFeedbackHistory();
+    const updated = [newRecord, ...history];
+    await set(BETA_FEEDBACK_STORAGE_KEY, updated);
+  } catch (err) {
+    console.warn('Beta feedback storage save error:', err);
+  }
+
+  // Locally propagate to prompt learning engine for preference adaptation
+  try {
+    const numericRating = feedback.woreOutfit
+      ? feedback.culturalAccuracy === 'authentic'
+        ? 5
+        : 4
+      : feedback.culturalAccuracy === 'clash'
+      ? 1
+      : 2;
+
+    await logPromptSelection({
+      promptText: feedback.eventContext,
+      eventContext: feedback.eventContext,
+      moodKeywords: [feedback.culturalAccuracy],
+      lockedItemIds: feedback.lockedItemIds,
+      userRating: numericRating,
+    });
+  } catch (err) {
+    console.warn('Failed to propagate beta feedback to prompt learning engine:', err);
+  }
+
+  return newRecord;
+}

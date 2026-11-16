@@ -42,21 +42,40 @@ const GUEST_USER: AuthUser = {
   isGuest: true,
 };
 
+function setSessionCookie(u: AuthUser | null) {
+  if (typeof document !== 'undefined') {
+    if (u && !u.isGuest) {
+      const payload = encodeURIComponent(
+        JSON.stringify({ id: u.id, role: u.role, email: u.email })
+      );
+      document.cookie = `auth_session=${payload}; Path=/; SameSite=Lax; max-age=604800`;
+    } else {
+      document.cookie = 'auth_session=; Path=/; SameSite=Lax; max-age=0';
+    }
+  }
+}
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const isConfigured = isSupabaseConfigured();
 
-  // Local storage users DB for demo/offline RBAC
-  const [usersDb, setUsersDb] = useState<AuthUser[]>([
-    { id: 'u-1', email: 'admin@ourcloset.com', name: 'Admin', role: 'admin', subscriptionTier: 'max', quickCode: 'ADMINX' },
-    { id: 'u-3', email: 'solo@ourcloset.com', name: 'Armaan', role: 'user', subscriptionTier: 'solo', quickCode: 'SOLO24' },
-  ]);
+  // Local storage users DB for demo/offline RBAC (disabled in production)
+  const [usersDb, setUsersDb] = useState<AuthUser[]>(() => {
+    if (process.env.NODE_ENV !== 'production' && !isConfigured) {
+      return [
+        { id: 'u-1', email: 'admin@ourcloset.com', name: 'Admin', role: 'admin', subscriptionTier: 'max', quickCode: 'ADMINX' },
+        { id: 'u-3', email: 'solo@ourcloset.com', name: 'Armaan', role: 'user', subscriptionTier: 'solo', quickCode: 'SOLO24' },
+      ];
+    }
+    return [];
+  });
 
   const persistSession = useCallback((u: AuthUser) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_session', JSON.stringify(u));
     }
+    setSessionCookie(u);
     setUser(u);
   }, []);
 
@@ -78,18 +97,51 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Initialize session and Supabase auth listener
   useEffect(() => {
+    let authListenerUnsubscribe: (() => void) | undefined;
+
     const initAuth = async () => {
-      // 1. If Supabase is configured, check remote session
+      // 1. If Supabase is configured, check remote session & subscribe to auth state changes
       if (isConfigured) {
         try {
           const supabase = createClient();
+
+          // Subscribe to onAuthStateChange (F-09: handles OAuth, magic-link and refresh)
+          const { data: listenerData } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN' && session?.user) {
+              const remoteRole = session.user.app_metadata?.role === 'admin' ? 'admin' : 'user';
+              const authUser: AuthUser = {
+                id: session.user.id,
+                email: session.user.email || '',
+                name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+                role: remoteRole,
+                subscriptionTier: session.user.user_metadata?.tier || 'solo',
+              };
+              await migrateGuestDataToUser(session.user.id);
+              persistSession(authUser);
+              setLoading(false);
+            } else if (event === 'SIGNED_OUT') {
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem('auth_session');
+              }
+              setSessionCookie(null);
+              setUser(GUEST_USER);
+              setLoading(false);
+            }
+          });
+
+          authListenerUnsubscribe = () => {
+            listenerData.subscription.unsubscribe();
+          };
+
           const { data } = await supabase.auth.getUser();
           if (data.user) {
+            // F-01: Read role strictly from app_metadata (service-controlled), NOT user_metadata
+            const role = data.user.app_metadata?.role === 'admin' ? 'admin' : 'user';
             const authUser: AuthUser = {
               id: data.user.id,
               email: data.user.email || '',
               name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User',
-              role: data.user.user_metadata?.role || 'user',
+              role,
               subscriptionTier: data.user.user_metadata?.tier || 'solo',
             };
             persistSession(authUser);
@@ -107,21 +159,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (savedSession) {
           try {
             const parsed = JSON.parse(savedSession);
+            // In production, force non-guest accounts without Supabase to user role unless verified
+            if (isConfigured && parsed.role === 'admin') {
+              parsed.role = 'user';
+            }
             setUser(parsed);
+            setSessionCookie(parsed);
           } catch {
             // Ignore
           }
         } else {
           // Default to Guest User so app is 100% functional without sign-in
           setUser(GUEST_USER);
+          setSessionCookie(null);
         }
 
-        const savedDb = localStorage.getItem('mock_users_db');
-        if (savedDb) {
-          try {
-            setUsersDb(JSON.parse(savedDb));
-          } catch {
-            // Ignore
+        if (process.env.NODE_ENV !== 'production' && !isConfigured) {
+          const savedDb = localStorage.getItem('mock_users_db');
+          if (savedDb) {
+            try {
+              setUsersDb(JSON.parse(savedDb));
+            } catch {
+              // Ignore
+            }
           }
         }
       }
@@ -130,42 +190,59 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     initAuth();
+
+    return () => {
+      if (authListenerUnsubscribe) {
+        authListenerUnsubscribe();
+      }
+    };
   }, [isConfigured, persistSession]);
 
   /**
-   * Standard login (Supabase or local mock) with automatic guest store migration.
+   * Standard login with automatic guest store migration.
    */
   const login = async (email: string, password?: string) => {
     setLoading(true);
     try {
-      if (isConfigured && password) {
+      if (isConfigured) {
+        if (!password) {
+          throw new Error('Password is required for authentication.');
+        }
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         if (data.user) {
+          // F-01: Read role strictly from app_metadata
+          const role = data.user.app_metadata?.role === 'admin' ? 'admin' : 'user';
           const authUser: AuthUser = {
             id: data.user.id,
             email: data.user.email || '',
             name: data.user.user_metadata?.full_name || email.split('@')[0],
-            role: 'user',
-            subscriptionTier: 'solo',
+            role,
+            subscriptionTier: data.user.user_metadata?.tier || 'solo',
           };
           // Migrate guest data to authenticated user
           await migrateGuestDataToUser(data.user.id);
           persistSession(authUser);
           return;
         }
+        return;
       }
 
-      // Offline / Local fallback
+      // Offline / Local development fallback only
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('Supabase authentication is not configured in this environment.');
+      }
+
       await new Promise((res) => setTimeout(res, 300));
       let found = usersDb.find((u) => u.email === email);
       if (!found) {
+        // F-01: Never automatically grant admin role from email string matching
         found = {
           id: `u-${Date.now()}`,
           email,
           name: email.split('@')[0],
-          role: email.includes('admin') ? 'admin' : 'user',
+          role: 'user',
           subscriptionTier: 'solo',
           quickCode: generateQuickCode(),
         };
@@ -222,6 +299,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const loginWithQuickCode = async (code: string) => {
+    if (isConfigured || process.env.NODE_ENV === 'production') {
+      throw new Error('QuickCode authentication is only available in local offline development.');
+    }
     await new Promise((res) => setTimeout(res, 200));
     const found = usersDb.find((u) => u.quickCode === code.toUpperCase());
     if (found) {
@@ -244,6 +324,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_session');
     }
+    setSessionCookie(null);
     // Revert to Guest User
     setUser(GUEST_USER);
   };

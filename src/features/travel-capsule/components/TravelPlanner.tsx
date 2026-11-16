@@ -200,7 +200,7 @@ export const TravelPlanner: React.FC = () => {
                 </div>
               ) : (
                 <div className="p-8 text-center bg-surface-container-lowest torn-swatch border border-outline-variant/30">
-                  <p className="spec-label text-primary/60">Tap "Generate" to compile your travel capsule.</p>
+                  <p className="spec-label text-primary/60">Tap &quot;Generate&quot; to compile your travel capsule.</p>
                 </div>
               )}
 

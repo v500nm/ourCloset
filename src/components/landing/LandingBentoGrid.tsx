@@ -35,7 +35,10 @@ export const LandingBentoGrid: React.FC = () => {
     <section ref={sectionRef} className="py-16 bg-surface-container-low/50 border-y border-dashed border-outline-variant/40 overflow-hidden">
       <div className="max-w-container mx-auto px-margin-mobile md:px-margin-desktop space-y-12">
         {/* Section Header */}
-        <motion.div style={{ opacity, y: yOffsetFast }} className="text-center max-w-2xl mx-auto">
+        <motion.div
+          style={shouldReduceMotion ? {} : { opacity, y: yOffsetFast }}
+          className="text-center max-w-2xl mx-auto"
+        >
           <SpecLabel className="text-secondary block mb-2">Architectural Principles</SpecLabel>
           <h2 className="font-display text-3xl sm:text-4xl text-primary">
             Designed for real cupboards, multicultural events, and shared households.
@@ -63,12 +66,18 @@ export const LandingBentoGrid: React.FC = () => {
 
               {/* Visual Split-Pane Mock */}
               <div className="grid grid-cols-2 gap-4 bg-surface-container p-4 rounded border border-outline-variant/30 overflow-hidden">
-                <motion.div style={{ x: splitLeftX }} className="p-3 bg-surface rounded border border-outline-variant/20">
+                <motion.div
+                  style={shouldReduceMotion ? {} : { x: splitLeftX }}
+                  className="p-3 bg-surface rounded border border-outline-variant/20"
+                >
                   <div className="spec-label text-[10px] text-primary/60 mb-1">Husband Wardrobe</div>
                   <div className="font-display text-xs font-bold text-primary">Tailored Navy Suit</div>
                   <div className="text-[10px] text-on-surface-variant font-mono mt-0.5">Formality 5/5</div>
                 </motion.div>
-                <motion.div style={{ x: splitRightX }} className="p-3 bg-surface rounded border border-secondary/40">
+                <motion.div
+                  style={shouldReduceMotion ? {} : { x: splitRightX }}
+                  className="p-3 bg-surface rounded border border-secondary/40"
+                >
                   <div className="spec-label text-[10px] text-secondary mb-1">Wife Wardrobe</div>
                   <div className="font-display text-xs font-bold text-primary">Dusk Mauve Abaya</div>
                   <div className="text-[10px] text-on-surface-variant font-mono mt-0.5">Formality 4/5</div>
@@ -81,7 +90,10 @@ export const LandingBentoGrid: React.FC = () => {
           <motion.div style={shouldReduceMotion ? {} : { opacity, y: yOffsetSlow, scale }}>
             <Card className="p-6 h-full flex flex-col justify-between bg-primary-container text-on-primary border-none">
               <div>
-                <motion.div style={{ scale: iconScale }} className="w-10 h-10 rounded bg-primary flex items-center justify-center text-on-primary mb-4 origin-left">
+                <motion.div
+                  style={shouldReduceMotion ? {} : { scale: iconScale }}
+                  className="w-10 h-10 rounded bg-primary flex items-center justify-center text-on-primary mb-4 origin-left"
+                >
                   <span className="material-symbols-outlined">memory</span>
                 </motion.div>
                 <SpecLabel className="text-on-primary-container block mb-1">Zero Paid API Keys</SpecLabel>
@@ -102,7 +114,10 @@ export const LandingBentoGrid: React.FC = () => {
           <motion.div style={shouldReduceMotion ? {} : { opacity, y: yOffsetFast, scale }}>
             <Card className="p-6 h-full flex flex-col justify-between">
               <div>
-                <motion.div style={{ scale: iconScale }} className="w-10 h-10 rounded bg-surface-container flex items-center justify-center text-primary mb-4 origin-left">
+                <motion.div
+                  style={shouldReduceMotion ? {} : { scale: iconScale }}
+                  className="w-10 h-10 rounded bg-surface-container flex items-center justify-center text-primary mb-4 origin-left"
+                >
                   <span className="material-symbols-outlined">family_restroom</span>
                 </motion.div>
                 <SpecLabel className="text-primary/60 block mb-1">Multi-Member Roster</SpecLabel>
@@ -140,12 +155,18 @@ export const LandingBentoGrid: React.FC = () => {
 
               {/* Stacked Learning Log Mock */}
               <div className="space-y-2 font-mono text-xs overflow-hidden">
-                <motion.div style={{ x: logItem1X }} className="p-2.5 bg-surface-container rounded border border-outline-variant/20 flex justify-between items-center text-primary">
-                  <span>Prompt: "sunset beach cocktail, pastel modest"</span>
+                <motion.div
+                  style={shouldReduceMotion ? {} : { x: logItem1X }}
+                  className="p-2.5 bg-surface-container rounded border border-outline-variant/20 flex justify-between items-center text-primary"
+                >
+                  <span>Prompt: &quot;sunset beach cocktail, pastel modest&quot;</span>
                   <span className="text-emerald-700 font-bold">92% Match</span>
                 </motion.div>
-                <motion.div style={{ x: logItem2X }} className="p-2.5 bg-surface-container rounded border border-outline-variant/20 flex justify-between items-center text-primary">
-                  <span>Prompt: "Sarah & Tariq Sangeet Night"</span>
+                <motion.div
+                  style={shouldReduceMotion ? {} : { x: logItem2X }}
+                  className="p-2.5 bg-surface-container rounded border border-outline-variant/20 flex justify-between items-center text-primary"
+                >
+                  <span>Prompt: &quot;Sarah &amp; Tariq Sangeet Night&quot;</span>
                   <span className="text-emerald-700 font-bold">98% Match</span>
                 </motion.div>
               </div>

@@ -17,12 +17,9 @@ const path = require('path');
 const ROOT_DIR = path.resolve(__dirname, '..');
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 
-// Files permitted to import or use mock datasets during Phase 0 baseline.
-// As subsequent phases (Phase 1, Phase 2, etc.) migrate each service/page,
-// they should be removed from this allowlist.
-const LEGACY_ALLOWLIST = new Set([
-  'src/providers/AuthProvider.tsx',
-].map(p => path.normalize(p)));
+// Production code contains ZERO mock dataset imports.
+// All production code is migrated to local-first data layers & Dexie.
+const LEGACY_ALLOWLIST = new Set([]);
 
 const EXCLUDED_PATTERNS = [
   path.normalize('src/lib/mockData.ts'),

@@ -94,7 +94,10 @@ export const LandingHero: React.FC = () => {
         >
           <Card className="p-6 relative bg-surface-container-lowest torn-swatch hard-shadow border border-secondary/40 overflow-hidden">
             {/* Top Right: Z-Path Point 2 Match Score Widget */}
-            <motion.div style={{ scale: matchScoreScale }} className="flex justify-between items-center mb-6 pb-4 border-b border-dashed border-outline-variant origin-left">
+            <motion.div
+              style={shouldReduceMotion ? {} : { scale: matchScoreScale }}
+              className="flex justify-between items-center mb-6 pb-4 border-b border-dashed border-outline-variant origin-left"
+            >
               <div>
                 <span className="spec-label text-primary/60 text-[10px] block">LIVE TWINNING ENGINE</span>
                 <h3 className="font-display text-headline-md text-primary">98% Match Score</h3>
@@ -108,7 +111,10 @@ export const LandingHero: React.FC = () => {
             {/* Z-Path Point 3: Diagonal Garment Swatches (Husband & Wife pairing) */}
             <div className="space-y-4 mb-6">
               {/* Husband Item */}
-              <motion.div style={{ x: husbandSwatchX }} className="p-3 bg-surface-container rounded border border-outline-variant/30 flex items-center justify-between">
+              <motion.div
+                style={shouldReduceMotion ? {} : { x: husbandSwatchX }}
+                className="p-3 bg-surface-container rounded border border-outline-variant/30 flex items-center justify-between"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-14 bg-surface-container-high rounded overflow-hidden">
                     <img
@@ -135,7 +141,10 @@ export const LandingHero: React.FC = () => {
               </div>
 
               {/* Wife Item */}
-              <motion.div style={{ x: wifeSwatchX }} className="p-3 bg-surface-container rounded border border-secondary/30 flex items-center justify-between">
+              <motion.div
+                style={shouldReduceMotion ? {} : { x: wifeSwatchX }}
+                className="p-3 bg-surface-container rounded border border-secondary/30 flex items-center justify-between"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-14 bg-surface-container-high rounded overflow-hidden">
                     <img

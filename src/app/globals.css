@@ -2,6 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───── Self-Hosted Material Symbols (Zero-Egress F-03) ───── */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  src: url('/fonts/material-symbols-outlined.ttf') format('truetype');
+  font-display: block;
+}
+
+/* ───── Font Stacks (Hermetic Zero-Egress Build F-03) ───── */
+@font-face {
+  font-family: 'Domine';
+  font-style: normal;
+  font-weight: 400 700;
+  src: local('Domine'), local('Georgia'), serif;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  src: local('Inter'), local('system-ui'), sans-serif;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  src: local('JetBrains Mono'), local('Menlo'), monospace;
+  font-display: swap;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
 /* ───── Tailoring Workshop — Global Tokens ───── */
 :root {
   --ink-bottle: #1F3B33;

@@ -20,22 +20,11 @@ import {
   fieldHlcFor,
   deltaFromRow,
   type SyncTable,
+  type RemoteDelta,
 } from './syncMapper';
 
 export type SyncState = 'synced' | 'pending' | 'offline' | 'error';
-
-export interface RemoteDelta {
-  table: string;
-  entityId: string;
-  action: 'insert' | 'update' | 'delete';
-  payload: Record<string, unknown>;
-  hlc: string;
-  fieldHlcs?: Record<string, string>;
-  deletedAt?: string | null;
-  updatedAt?: string;
-  /** Server-assigned, strictly increasing per write. The ONLY valid basis for a pull cursor. */
-  serverSeq?: number;
-}
+export type { RemoteDelta } from './syncMapper';
 
 export interface SyncTransport {
   isConfigured(): boolean;

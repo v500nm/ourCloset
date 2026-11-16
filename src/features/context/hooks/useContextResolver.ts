@@ -5,7 +5,7 @@ import { ContextAttributes, ContextPreset, ActiveMode, EventSubContext } from '.
 import { resolveContextFromFreeform, resolveContextFromPreset } from '../services/contextService';
 
 export function useContextResolver() {
-  const [mode, setMode] = useState<ActiveMode>({ type: 'couple', memberIds: ['m-adnan', 'm-'] });
+  const [mode, setMode] = useState<ActiveMode>({ type: 'solo', memberIds: ['m-adnan'] });
   const [selectedPreset, setSelectedPreset] = useState<ContextPreset>('Event');
   const [selectedSubPreset, setSelectedSubPreset] = useState<EventSubContext>('Sangeet');
   const [freeformText, setFreeformText] = useState('sunset beach cocktail, pastel modest vibes');

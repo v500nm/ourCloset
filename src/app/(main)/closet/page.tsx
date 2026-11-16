@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   CategoryFilter,
   ClosetGrid,
@@ -13,6 +14,7 @@ import { StitchingDivider } from '@/components';
 import { MotionText, MotionContainer } from '@/components/ui/motionText';
 
 export default function ClosetPage() {
+  const router = useRouter();
   const {
     items,
     allItems,
@@ -28,6 +30,18 @@ export default function ClosetPage() {
   } = useWardrobeItems('western');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQuickStarting, setIsQuickStarting] = useState(false);
+
+  const handleQuickStart = async () => {
+    setIsQuickStarting(true);
+    try {
+      await loadSampleWardrobe();
+      router.push('/today?quickstart=true');
+    } catch (err) {
+      console.error('Failed to quick-start wardrobe:', err);
+      setIsQuickStarting(false);
+    }
+  };
 
   return (
     <div className="space-y-8 relative">
@@ -46,23 +60,34 @@ export default function ClosetPage() {
 
       <StitchingDivider />
 
-      {/* Empty State with Explicit Seeding Action */}
+      {/* Empty State with Explicit Quick-Start Seeding Action */}
       {allItems.length === 0 && !loading && (
-        <div className="p-8 text-center bg-surface-container-lowest torn-swatch border border-outline-variant/30 rounded-lg space-y-4 my-6">
+        <div data-testid="closet-empty-state" className="p-8 text-center bg-surface-container-lowest torn-swatch border border-outline-variant/30 rounded-lg space-y-4 my-6">
           <span className="material-symbols-outlined text-5xl text-primary/40">checkroom</span>
           <div>
             <h3 className="font-display text-title-lg text-primary">Your Closet is Pristine</h3>
             <p className="text-body-sm text-on-surface-variant max-w-md mx-auto mt-1">
-              Start by adding your first garment photo with the &ldquo;+&rdquo; button, or load our curated sample wardrobe to preview cultural twinning and outfit coordination.
+              Start by adding your first garment photo with the &ldquo;+&rdquo; button, or quick-start with our curated capsule wardrobe to generate your first outfit in seconds.
             </p>
           </div>
-          <button
-            onClick={() => loadSampleWardrobe()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded font-mono text-xs uppercase tracking-wider hover:bg-primary/90 transition-all shadow"
-          >
-            <span className="material-symbols-outlined text-sm">inventory_2</span>
-            Load Sample Wardrobe
-          </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              data-testid="quick-start-wardrobe-btn"
+              onClick={handleQuickStart}
+              disabled={isQuickStarting}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-on-secondary rounded-lg font-mono text-xs uppercase tracking-wider font-bold hover:bg-primary transition-all shadow-md active:scale-95 disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-base">bolt</span>
+              {isQuickStarting ? 'Preparing Wardrobe...' : 'Quick-Start Wardrobe (1-Click to First Outfit)'}
+            </button>
+            <button
+              onClick={() => loadSampleWardrobe()}
+              className="inline-flex items-center gap-2 px-4 py-2 text-primary font-mono text-xs uppercase tracking-wider hover:underline"
+            >
+              <span className="material-symbols-outlined text-sm">inventory_2</span>
+              Load Sample Closet Here
+            </button>
+          </div>
         </div>
       )}
 

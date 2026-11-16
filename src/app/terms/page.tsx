@@ -52,7 +52,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="font-display font-bold text-xl text-primary mb-3">5. Disclaimer of Warranties</h2>
             <p>
-              This application is provided "as is" and "as available". While we strive to support cross-cultural wardrobe algorithms, we make no representations or warranties of any kind regarding accuracy or coordination results.
+              This application is provided &quot;as is&quot; and &quot;as available&quot;. While we strive to support cross-cultural wardrobe algorithms, we make no representations or warranties of any kind regarding accuracy or coordination results.
             </p>
           </section>
 

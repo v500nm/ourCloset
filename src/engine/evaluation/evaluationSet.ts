@@ -652,5 +652,136 @@ export const EVALUATION_DATASET: LabeledPairing[] = [
     expectedRating: 'good',
     rationale: 'Executive professional monochrome pairing.',
   },
+
+  // ==========================================
+  // 4. PHASE 7 BETA-STYLE SCENARIO BENCHMARKS (F-04)
+  // Author-labelled held-out scenarios simulating 15 real-world household edge cases
+  // across Western, Indian Traditional, and Islamic-Modest dress codes.
+  // ==========================================
+  // --- Western Beta Household Cases ---
+  {
+    id: 'west-beta-01',
+    taxonomy: 'western',
+    itemA: createItem('wb-suit-01', 'Sage Green Linen Tailored Suit', 'suit', 'western', '#8A9A86', 4),
+    itemB: createItem('wb-shirt-01', 'Cream Silk Chiffon Blouse', 'shirt', 'western', '#FFFDD0', 4),
+    expectedRating: 'good',
+    rationale: 'Beta Household #3 accepted: Harmonious summer garden wedding pairing with muted sage and cream neutral.',
+  },
+  {
+    id: 'west-beta-02',
+    taxonomy: 'western',
+    itemA: createItem('wb-blazer-02', 'Charcoal Double-Breasted Blazer', 'suit', 'western', '#333333', 4),
+    itemB: createItem('wb-shirt-02', 'Lavender Crisp Poplin Shirt', 'shirt', 'western', '#E6E6FA', 4),
+    expectedRating: 'good',
+    rationale: 'Beta Household #5 accepted: Corporate executive contrast between deep charcoal and soft lavender.',
+  },
+  {
+    id: 'west-beta-03',
+    taxonomy: 'western',
+    itemA: createItem('wb-tux-01', 'Black Velvet Dinner Jacket', 'suit', 'western', '#111111', 5),
+    itemB: createItem('wb-shoes-01', 'Tan Suede Casual Boat Shoes', 'footwear', 'western', '#C19A6B', 1),
+    expectedRating: 'clash',
+    rationale: 'Beta Household #3 rejected: Severe formality mismatch between black tie eveningwear and casual boat shoes.',
+  },
+  {
+    id: 'west-beta-04',
+    taxonomy: 'western',
+    itemA: createItem('wb-coat-01', 'Camel Cashmere Long Overcoat', 'suit', 'western', '#C19A6B', 4),
+    itemB: createItem('wb-knit-01', 'Ivory Merino Ribbed Turtleneck', 'shirt', 'western', '#FFFFF0', 3),
+    expectedRating: 'good',
+    rationale: 'Beta Household #8 accepted: Elegant autumn/winter monochromatic warmth.',
+  },
+  {
+    id: 'west-beta-05',
+    taxonomy: 'western',
+    itemA: createItem('wb-jacket-01', 'Navy Harrington Light Jacket', 'suit', 'western', '#002040', 2),
+    itemB: createItem('wb-pants-01', 'Olive Green Slim Cotton Chinos', 'pants', 'western', '#4B5320', 2),
+    expectedRating: 'good',
+    rationale: 'Beta Household #2 accepted: Balanced weekend smart-casual color harmony.',
+  },
+
+  // --- Indian Traditional Beta Household Cases ---
+  {
+    id: 'ind-beta-01',
+    taxonomy: 'indian_traditional',
+    itemA: createItem('ib-sherwani-01', 'Peach Lucknowi Georgette Sherwani', 'traditional_combo', 'indian_traditional', '#FFE5B4', 5, { hardware_metal_color: 'gold' }),
+    itemB: createItem('ib-lehenga-01', 'Mint Green Organza Zari Lehenga', 'traditional_combo', 'indian_traditional', '#98FF98', 5, { hardware_metal_color: 'gold' }),
+    expectedRating: 'good',
+    rationale: 'Beta Household #1 accepted: Authentic daytime wedding pastel harmony with matching gold zari.',
+  },
+  {
+    id: 'ind-beta-02',
+    taxonomy: 'indian_traditional',
+    itemA: createItem('ib-kurta-01', 'Royal Sapphire Silk Kurta', 'traditional_combo', 'indian_traditional', '#0F52BA', 4, { hardware_metal_color: 'silver' }),
+    itemB: createItem('ib-saree-01', 'Silver Foil Grey Organza Saree', 'traditional_combo', 'indian_traditional', '#D3D3D3', 4, { hardware_metal_color: 'silver' }),
+    expectedRating: 'good',
+    rationale: 'Beta Household #4 accepted: Striking sangeet evening contrast with unified cool silver hardware.',
+  },
+  {
+    id: 'ind-beta-03',
+    taxonomy: 'indian_traditional',
+    itemA: createItem('ib-kurta-02', 'Turmeric Yellow Khadi Kurta', 'traditional_combo', 'indian_traditional', '#FFD700', 3),
+    itemB: createItem('ib-kurti-01', 'Marigold Border White Chanderi Kurti', 'traditional_combo', 'indian_traditional', '#FFF8DC', 3),
+    expectedRating: 'good',
+    rationale: 'Beta Household #7 accepted: Traditional Haldi ceremony scheme with auspicious yellow accents.',
+  },
+  {
+    id: 'ind-beta-04',
+    taxonomy: 'indian_traditional',
+    itemA: createItem('ib-sherwani-02', 'Brocade Maroon Grand Sherwani', 'traditional_combo', 'indian_traditional', '#800000', 5),
+    itemB: createItem('ib-shorts-01', 'Neon Green Athletic Running Shorts', 'pants', 'indian_traditional', '#39FF14', 1),
+    expectedRating: 'clash',
+    rationale: 'Beta Household #9 rejected: Severe cultural violation pairing ceremonial bridal sherwani with athletic shorts.',
+  },
+  {
+    id: 'ind-beta-05',
+    taxonomy: 'indian_traditional',
+    itemA: createItem('ib-kurta-03', 'Rust Orange Raw Silk Kurta', 'traditional_combo', 'indian_traditional', '#C04000', 4),
+    itemB: createItem('ib-saree-02', 'Deep Teal Tussar Silk Saree', 'traditional_combo', 'indian_traditional', '#004D40', 4),
+    expectedRating: 'good',
+    rationale: 'Beta Household #10 accepted: Rich festive complementary jewel tones for Diwali celebration.',
+  },
+
+  // --- Islamic-Modest Beta Household Cases ---
+  {
+    id: 'mod-beta-01',
+    taxonomy: 'islamic_modest',
+    itemA: createItem('mb-abaya-01', 'Sage Green Textured Linen Abaya', 'traditional_combo', 'islamic_modest', '#8A9A86', 4),
+    itemB: createItem('mb-hijab-01', 'Ivory Chiffon Flowing Hijab', 'accessory', 'islamic_modest', '#FFFFF0', 4),
+    expectedRating: 'good',
+    rationale: 'Beta Household #2 accepted: High-modesty Eid morning pairing with organic earthy drape.',
+  },
+  {
+    id: 'mod-beta-02',
+    taxonomy: 'islamic_modest',
+    itemA: createItem('mb-abaya-02', 'Midnight Navy Velvet Bisht Abaya', 'traditional_combo', 'islamic_modest', '#0A1128', 5, { hardware_metal_color: 'silver' }),
+    itemB: createItem('mb-hijab-02', 'Platinum Grey Mulberry Silk Hijab', 'accessory', 'islamic_modest', '#E5E4E2', 5, { hardware_metal_color: 'silver' }),
+    expectedRating: 'good',
+    rationale: 'Beta Household #5 accepted: Formal Walima evening modest wear with matching cool silver embroidery.',
+  },
+  {
+    id: 'mod-beta-03',
+    taxonomy: 'islamic_modest',
+    itemA: createItem('mb-abaya-03', 'Sand Dune Beige Ribbed Abaya', 'traditional_combo', 'islamic_modest', '#D2B48C', 3),
+    itemB: createItem('mb-hijab-03', 'Olive Green Modal Lightweight Hijab', 'accessory', 'islamic_modest', '#556B2F', 3),
+    expectedRating: 'good',
+    rationale: 'Beta Household #6 accepted: Serene earthy tones suitable for Friday congregational prayers.',
+  },
+  {
+    id: 'mod-beta-04',
+    taxonomy: 'islamic_modest',
+    itemA: createItem('mb-abaya-04', 'Black Open-Front Ceremonial Abaya', 'traditional_combo', 'islamic_modest', '#1A1A1A', 4),
+    itemB: createItem('mb-top-01', 'Sheer Sleeveless Cropped Tank Top', 'shirt', 'islamic_modest', '#FF1493', 1),
+    expectedRating: 'clash',
+    rationale: 'Beta Household #8 rejected: Modesty floor violation with sleeveless cropped undergarment.',
+  },
+  {
+    id: 'mod-beta-05',
+    taxonomy: 'islamic_modest',
+    itemA: createItem('mb-abaya-05', 'Mocha Brown Crepe Tiered Abaya', 'traditional_combo', 'islamic_modest', '#4B3621', 3),
+    itemB: createItem('mb-hijab-04', 'Dusty Rose Jersey Daily Hijab', 'accessory', 'islamic_modest', '#DCAE96', 3),
+    expectedRating: 'good',
+    rationale: 'Beta Household #7 accepted: Soft warm everyday tonal coordination for family gatherings.',
+  },
 ];
 

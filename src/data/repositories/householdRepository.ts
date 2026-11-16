@@ -4,6 +4,7 @@ import { HouseholdBond } from '@/types';
 export class HouseholdRepository {
   private static readonly HOUSEHOLD_ID = 'primary-household';
   private static readonly COUPLE_STORAGE_KEY = 'ourcloset_primary_couple';
+  private static readonly TWINNING_STORAGE_KEY = 'ourcloset_twinning_pair';
 
   constructor(private database: OurClosetDB = db) {}
 
@@ -24,6 +25,7 @@ export class HouseholdRepository {
   }
 
   private inMemoryCoupleIds: [string, string] | null = null;
+  private inMemoryTwinningPairIds: [string, string] | null = null;
 
   async getPrimaryCoupleIds(): Promise<[string, string] | null> {
     if (this.inMemoryCoupleIds) return this.inMemoryCoupleIds;
@@ -44,6 +46,42 @@ export class HouseholdRepository {
     this.inMemoryCoupleIds = ids;
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(HouseholdRepository.COUPLE_STORAGE_KEY, JSON.stringify(ids));
+    }
+  }
+
+  async clearPrimaryCoupleIds(): Promise<void> {
+    this.inMemoryCoupleIds = null;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(HouseholdRepository.COUPLE_STORAGE_KEY);
+    }
+  }
+
+  async getTwinningPairIds(): Promise<[string, string] | null> {
+    if (this.inMemoryTwinningPairIds) return this.inMemoryTwinningPairIds;
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(HouseholdRepository.TWINNING_STORAGE_KEY);
+        if (stored) {
+          return JSON.parse(stored) as [string, string];
+        }
+      } catch {
+        // fallback
+      }
+    }
+    return null;
+  }
+
+  async setTwinningPairIds(ids: [string, string]): Promise<void> {
+    this.inMemoryTwinningPairIds = ids;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(HouseholdRepository.TWINNING_STORAGE_KEY, JSON.stringify(ids));
+    }
+  }
+
+  async clearTwinningPairIds(): Promise<void> {
+    this.inMemoryTwinningPairIds = null;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(HouseholdRepository.TWINNING_STORAGE_KEY);
     }
   }
 

@@ -112,7 +112,7 @@ describe('IngestionModal Component & Queue State Machine', () => {
       primary_color_hex: queueItem.editedPrimaryColor,
       secondary_color_hex: queueItem.editedSecondaryColor || undefined,
       hardware_metal_color: queueItem.editedHardwareMetal || undefined,
-      season_tags: queueItem.editedSeasonTags,
+      season_tags: queueItem.editedSeasonTags || [],
       wear_count: 0,
       laundry_status: 'CLEAN',
       privacy_tier: queueItem.editedPrivacyTier,

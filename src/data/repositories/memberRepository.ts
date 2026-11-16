@@ -1,5 +1,5 @@
 import { db, OurClosetDB } from '../db';
-import { FamilyMember } from '@/providers/HouseholdProvider';
+import type { FamilyMember } from '@/types';
 
 export class MemberRepository {
   constructor(private database: OurClosetDB = db) {}

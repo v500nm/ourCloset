@@ -81,7 +81,10 @@ export const LandingTimelineShowcase: React.FC = () => {
 
               {/* Flanking Partner & Children Thumbnails (Span 1) */}
               <div className="col-span-1 space-y-3 overflow-hidden p-2 -m-2">
-                <motion.div style={{ x: partnerThumbX, opacity: thumbOpacity }} className="p-2 bg-surface-container rounded border border-secondary/30 relative">
+                <motion.div
+                  style={shouldReduceMotion ? {} : { x: partnerThumbX, opacity: thumbOpacity }}
+                  className="p-2 bg-surface-container rounded border border-secondary/30 relative"
+                >
                   <div className="aspect-square bg-surface-container-high rounded overflow-hidden mb-1">
                     <img
                       src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=200&auto=format&fit=crop&q=80"
@@ -93,7 +96,10 @@ export const LandingTimelineShowcase: React.FC = () => {
                   <div className="text-[8px] text-secondary font-mono">MATCHED</div>
                 </motion.div>
 
-                <motion.div style={{ x: childThumbX, opacity: thumbOpacity }} className="p-2 bg-surface-container rounded border border-outline-variant/30">
+                <motion.div
+                  style={shouldReduceMotion ? {} : { x: childThumbX, opacity: thumbOpacity }}
+                  className="p-2 bg-surface-container rounded border border-outline-variant/30"
+                >
                   <div className="aspect-square bg-surface-container-high rounded overflow-hidden mb-1">
                     <img
                       src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=200&auto=format&fit=crop&q=80"

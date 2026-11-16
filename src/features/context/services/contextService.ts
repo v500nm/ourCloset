@@ -1,7 +1,6 @@
 import { ContextAttributes, ContextPreset, EventSubContext } from '../types/context.types';
 import { CulturalStyle } from '@/types';
 import { cosineSimilarity } from '@/utils';
-import PipelineSingleton from '@/services/transformers/pipeline';
 
 export interface ContextTemplate extends ContextAttributes {
   keywords: string[];
@@ -868,6 +867,7 @@ async function getSemanticBestMatch(
   if (candidates.length === 0) return null;
 
   try {
+    const { default: PipelineSingleton } = await import('@/services/transformers/pipeline');
     const pipelineInstance = await PipelineSingleton.getInstance();
     const queryOutput = await pipelineInstance(query, { pooling: 'mean', normalize: true });
     const queryVector = Array.from(queryOutput.data as Float32Array);

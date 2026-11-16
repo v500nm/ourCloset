@@ -1,7 +1,6 @@
 import Dexie, { type Table } from 'dexie';
-import { WardrobeItem, OutfitHistory, HouseholdBond } from '@/types';
-import { FamilyMember } from '@/providers/HouseholdProvider';
-import type { OutboxMutation } from './sync/outbox';
+import type { WardrobeItem, OutfitHistory, HouseholdBond, FamilyMember } from '@/types';
+import type { OutboxMutation } from './sync/outboxTypes';
 
 export interface StoredBlob {
   id: string;

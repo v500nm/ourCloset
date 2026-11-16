@@ -1,18 +1,26 @@
 'use client';
 
 import React from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion, type HTMLMotionProps } from 'motion/react';
+
+export interface CardProps extends HTMLMotionProps<'div'> {
+  children: React.ReactNode;
+  className?: string;
+  tornSwatch?: boolean;
+  animateIn?: boolean;
+}
 
 /**
  * Motion Card — motion.dev scroll reveal & elevation per DESIGN.md.
  * Uses torn-swatch clip-path (notched corner) and hard shadow.
  */
-export const Card: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-  tornSwatch?: boolean;
-  animateIn?: boolean;
-}> = ({ children, className = '', tornSwatch = false, animateIn = true }) => {
+export const Card: React.FC<CardProps> = ({
+  children,
+  className = '',
+  tornSwatch = false,
+  animateIn = true,
+  ...rest
+}) => {
   const shouldReduceMotion = useReducedMotion();
 
   const motionProps =
@@ -31,6 +39,7 @@ export const Card: React.FC<{
       className={`bg-surface/80 backdrop-blur-md border border-outline-variant/30 p-6 ${
         tornSwatch ? 'torn-swatch' : 'rounded-2xl'
       } hard-shadow ${className}`}
+      {...rest}
     >
       {children}
     </motion.div>

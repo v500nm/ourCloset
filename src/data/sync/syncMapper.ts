@@ -4,7 +4,18 @@
  * ADR-002 is enforced here by construction: only whitelisted metadata columns can ever be pushed. There is no
  * image_url / photo_url / embedding in any list below, so no code path can add one by accident.
  */
-import type { RemoteDelta } from './syncWorker';
+export interface RemoteDelta {
+  table: string;
+  entityId: string;
+  action: 'insert' | 'update' | 'delete';
+  payload: Record<string, unknown>;
+  hlc: string;
+  fieldHlcs?: Record<string, string>;
+  deletedAt?: string | null;
+  updatedAt?: string;
+  /** Server-assigned, strictly increasing per write. The ONLY valid basis for a pull cursor. */
+  serverSeq?: number;
+}
 
 export type SyncTable = 'wardrobe_items' | 'outfit_history';
 

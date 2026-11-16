@@ -84,9 +84,9 @@ module.exports = {
 
       /* ───── Typography (Domine / Inter / JetBrains Mono) ───── */
       fontFamily: {
-        'display': ['Domine', 'serif'],
-        'body': ['Inter', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'monospace'],
+        'display': ['Domine', 'Georgia', 'serif'],
+        'body': ['Inter', 'system-ui', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'Menlo', 'monospace'],
       },
       fontSize: {
         'display-lg': ['42px', { lineHeight: '48px', letterSpacing: '-0.02em', fontWeight: '700' }],

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useAuth } from '@/providers/AuthProvider';
+import { SyncStatusIndicator } from '@/components/ui/SyncStatusIndicator';
 
 export const Header: React.FC = () => {
   const pathname = usePathname();
@@ -102,6 +103,7 @@ export const Header: React.FC = () => {
 
           {/* Desktop Right Actions */}
           <div className="flex items-center pl-4 border-l border-outline-variant/30 gap-2">
+            <SyncStatusIndicator showLabel={false} />
             {user ? (
               <>
                 <Link
@@ -137,15 +139,18 @@ export const Header: React.FC = () => {
           <Link href="/today" className="font-display text-xl text-primary">
             ourCloset
           </Link>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center"
-            aria-label="Toggle Menu"
-          >
-            <span className="material-symbols-outlined text-2xl">
-              {mobileMenuOpen ? 'close' : 'menu'}
-            </span>
-          </button>
+          <div className="flex items-center gap-2">
+            <SyncStatusIndicator showLabel={false} />
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center"
+              aria-label="Toggle Menu"
+            >
+              <span className="material-symbols-outlined text-2xl">
+                {mobileMenuOpen ? 'close' : 'menu'}
+              </span>
+            </button>
+          </div>
         </div>
 
         <AnimatePresence>

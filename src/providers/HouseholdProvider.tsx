@@ -2,29 +2,25 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { FamilyHierarchyRole, HouseholdRole } from '@/types';
+import { FamilyHierarchyRole, HouseholdRole, FamilyMember } from '@/types';
 import { memberRepository } from '@/data/repositories/memberRepository';
 import { householdRepository } from '@/data/repositories/householdRepository';
 
-export interface FamilyMember {
-  id: string;
-  name: string;
-  role: HouseholdRole;
-  hierarchyRole: FamilyHierarchyRole;
-  customRoleLabel?: string;
-  closetCount: number;
-  privacyTier: 'PUBLIC' | 'PRIVATE';
-  joinedAt: string;
-}
+export type { FamilyMember };
 
 interface HouseholdContextProps {
   members: FamilyMember[];
   setMembers: React.Dispatch<React.SetStateAction<FamilyMember[]>>;
   addMember: (member: FamilyMember) => void;
+  editMember: (id: string, updates: Partial<FamilyMember>) => void;
   togglePrivacy: (id: string) => void;
   removeMember: (id: string) => void;
   primaryCoupleIds: [string, string] | null;
   setPrimaryCouple: (id1: string, id2: string) => void;
+  clearPrimaryCouple: () => void;
+  twinningPair: [string, string] | null;
+  setTwinningPair: (id1: string, id2: string) => void;
+  clearTwinningPair: () => void;
 }
 
 const HouseholdContext = createContext<HouseholdContextProps | undefined>(undefined);
@@ -81,8 +77,9 @@ export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?:
   const isIsolatedDemo = !!initialMembers;
   const [isolatedMembers, setIsolatedMembers] = useState<FamilyMember[]>(initialMembers || DEFAULT_MEMBERS);
   const [isolatedCoupleIds, setIsolatedCoupleIds] = useState<[string, string] | null>(
-    initialMembers && initialMembers.length >= 2 ? [initialMembers[0].id, initialMembers[1].id] : ['m-adnan', 'm-']
+    initialMembers && initialMembers.length >= 2 ? [initialMembers[0].id, initialMembers[1].id] : null
   );
+  const [isolatedTwinningPair, setIsolatedTwinningPair] = useState<[string, string] | null>(null);
 
   // Production live query from IndexedDB
   const liveMembers = useLiveQuery(
@@ -93,6 +90,9 @@ export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?:
   const [primaryCoupleIds, setPrimaryCoupleIdsState] = useState<[string, string] | null>(
     isIsolatedDemo ? isolatedCoupleIds : null
   );
+  const [twinningPair, setTwinningPairState] = useState<[string, string] | null>(
+    isIsolatedDemo ? isolatedTwinningPair : null
+  );
 
   useEffect(() => {
     if (isIsolatedDemo) return;
@@ -101,11 +101,20 @@ export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?:
       const count = await memberRepository.count();
       if (count === 0) {
         await memberRepository.bulkAdd(DEFAULT_MEMBERS);
-        await householdRepository.setPrimaryCoupleIds(['m-adnan', 'm-']);
-        setPrimaryCoupleIdsState(['m-adnan', 'm-']);
+      }
+      const couple = await householdRepository.getPrimaryCoupleIds();
+      // Filter out any invalid or empty IDs
+      if (couple && couple[0] && couple[1]) {
+        setPrimaryCoupleIdsState(couple);
       } else {
-        const couple = await householdRepository.getPrimaryCoupleIds();
-        setPrimaryCoupleIdsState(couple || ['m-adnan', 'm-']);
+        setPrimaryCoupleIdsState(null);
+      }
+
+      const twin = await householdRepository.getTwinningPairIds();
+      if (twin && twin[0] && twin[1]) {
+        setTwinningPairState(twin);
+      } else {
+        setTwinningPairState(null);
       }
     };
 
@@ -117,6 +126,14 @@ export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?:
       setIsolatedMembers(prev => [...prev, member]);
     } else {
       memberRepository.add(member);
+    }
+  };
+
+  const editMember = (id: string, updates: Partial<FamilyMember>) => {
+    if (isIsolatedDemo) {
+      setIsolatedMembers(prev => prev.map(m => (m.id === id ? { ...m, ...updates } : m)));
+    } else {
+      memberRepository.update(id, updates);
     }
   };
 
@@ -133,18 +150,60 @@ export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?:
   const removeMember = (id: string) => {
     if (isIsolatedDemo) {
       setIsolatedMembers(prev => prev.filter(m => m.id !== id));
+      if (isolatedCoupleIds && (isolatedCoupleIds[0] === id || isolatedCoupleIds[1] === id)) {
+        setIsolatedCoupleIds(null);
+      }
+      if (isolatedTwinningPair && (isolatedTwinningPair[0] === id || isolatedTwinningPair[1] === id)) {
+        setIsolatedTwinningPair(null);
+      }
     } else {
       memberRepository.remove(id);
+      if (primaryCoupleIds && (primaryCoupleIds[0] === id || primaryCoupleIds[1] === id)) {
+        clearPrimaryCouple();
+      }
+      if (twinningPair && (twinningPair[0] === id || twinningPair[1] === id)) {
+        clearTwinningPair();
+      }
     }
   };
 
   const setPrimaryCouple = (id1: string, id2: string) => {
+    if (!id1 || !id2 || id1 === id2) return;
     const couple: [string, string] = [id1, id2];
     if (isIsolatedDemo) {
       setIsolatedCoupleIds(couple);
     } else {
       setPrimaryCoupleIdsState(couple);
       householdRepository.setPrimaryCoupleIds(couple);
+    }
+  };
+
+  const clearPrimaryCouple = () => {
+    if (isIsolatedDemo) {
+      setIsolatedCoupleIds(null);
+    } else {
+      setPrimaryCoupleIdsState(null);
+      householdRepository.clearPrimaryCoupleIds();
+    }
+  };
+
+  const setTwinningPair = (id1: string, id2: string) => {
+    if (!id1 || !id2 || id1 === id2) return;
+    const pair: [string, string] = [id1, id2];
+    if (isIsolatedDemo) {
+      setIsolatedTwinningPair(pair);
+    } else {
+      setTwinningPairState(pair);
+      householdRepository.setTwinningPairIds(pair);
+    }
+  };
+
+  const clearTwinningPair = () => {
+    if (isIsolatedDemo) {
+      setIsolatedTwinningPair(null);
+    } else {
+      setTwinningPairState(null);
+      householdRepository.clearTwinningPairIds();
     }
   };
 
@@ -166,10 +225,15 @@ export const HouseholdProvider: React.FC<{ children: ReactNode; initialMembers?:
         members,
         setMembers,
         addMember,
+        editMember,
         togglePrivacy,
         removeMember,
         primaryCoupleIds: isIsolatedDemo ? isolatedCoupleIds : primaryCoupleIds,
         setPrimaryCouple,
+        clearPrimaryCouple,
+        twinningPair: isIsolatedDemo ? isolatedTwinningPair : twinningPair,
+        setTwinningPair,
+        clearTwinningPair,
       }}
     >
       {children}

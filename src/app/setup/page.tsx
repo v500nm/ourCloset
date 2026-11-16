@@ -1,6 +1,6 @@
 'use client';
 
-import { HouseholdSetup } from '@/features/household';
+import { HouseholdSetup, AccountDataManagement } from '@/features/household';
 import { MotionText, MotionContainer } from '@/components/ui/motionText';
 import { Header } from '@/components/layout/header';
 
@@ -26,6 +26,7 @@ export default function SetupPage() {
           </div>
 
           <HouseholdSetup />
+          <AccountDataManagement />
         </MotionContainer>
       </main>
     </div>
